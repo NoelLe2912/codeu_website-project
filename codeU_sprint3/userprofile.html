@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | CodeU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png">
+</head>
+
+<body class="bg-gray-50">
+
+<header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+
+        <a href="dashboard.html">
+            <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png"
+                 alt="CodeU Logo"
+                 class="h-10 w-auto">
+        </a>
+
+        <nav class="space-x-6">
+            <a href="home.html" class="text-yellow-300 hover:text-blue-700 font-bold">Home</a>
+            <a href="courses.html" class="text-yellow-300 hover:text-blue-700 font-bold">Courses</a>
+            <a href="community.html" class="text-yellow-300 hover:text-blue-700 font-bold">Community</a>
+            <a href="aboutus.html" class="text-yellow-300 hover:text-blue-700 font-bold">About Us</a>
+        </nav>
+
+        <a href="profile.html">
+            <img id="headerProfilePic"
+                 class="h-10 w-10 rounded-full border-2 border-yellow-300"
+                 src="https://i.pravatar.cc/100"
+                 alt="Profile">
+        </a>
+    </div>
+</header>
+
+<section class="max-w-4xl mx-auto mt-14 bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.3)] p-10">
+
+    <h1 class="text-4xl font-extrabold text-blue-600 text-center mb-10">
+        Your Profile
+    </h1>
+
+    <div class="flex flex-col md:flex-row gap-10 items-center">
+
+        <div class="flex flex-col items-center gap-4">
+            <img id="profilePic"
+                 class="h-40 w-40 rounded-full shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]"
+                 src="https://i.pravatar.cc/200"
+                 alt="Profile Picture">
+
+            <label class="bg-yellow-300 px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition">
+                Change Photo
+                <input type="file" accept="image/*" class="hidden" id="photoInput">
+            </label>
+        </div>
+
+        <!-- INFO -->
+        <div class="flex-1 w-full space-y-6">
+
+            <div>
+                <label class="text-gray-500 text-sm">Name</label>
+                <input id="nameInput"
+                       class="w-full mt-1 p-3 rounded-lg border focus:outline-blue-500"
+                       type="text">
+            </div>
+
+            <div>
+                <label class="text-gray-500 text-sm">Email</label>
+                <input id="emailInput"
+                       class="w-full mt-1 p-3 rounded-lg border focus:outline-blue-500"
+                       type="email">
+            </div>
+
+            <div class="flex gap-4 justify-end mt-6">
+                <button onclick="resetProfile()"
+                        class="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition">
+                    Cancel
+                </button>
+
+                <button onclick="saveProfile()"
+                        class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                    Save Changes
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<footer class="bg-gray-200 mt-20 py-16">
+    <div class="max-w-6xl mx-auto text-center">
+        <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+    </div>
+</footer>
+
+<script>
+    const defaultProfile = {
+        name: "Name Goes Here",
+        email: "Email goes here",
+        photo: "User Photo Goes Here"
+    };
+
+    const profile = JSON.parse(localStorage.getItem("profile")) || defaultProfile;
+
+    const nameInput = document.getElementById("nameInput");
+    const emailInput = document.getElementById("emailInput");
+    const profilePic = document.getElementById("profilePic");
+    const headerPic = document.getElementById("headerProfilePic");
+    const photoInput = document.getElementById("photoInput");
+
+    function loadProfile() {
+        nameInput.value = profile.name;
+        emailInput.value = profile.email;
+        profilePic.src = profile.photo;
+        headerPic.src = profile.photo;
+    }
+
+    function saveProfile() {
+        profile.name = nameInput.value;
+        profile.email = emailInput.value;
+        localStorage.setItem("profile", JSON.stringify(profile));
+        alert("Profile updated!");
+    }
+
+    function resetProfile() {
+        loadProfile();
+    }
+
+    photoInput.addEventListener("change", () => {
+        const file = photoInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                profile.photo = reader.result;
+                profilePic.src = reader.result;
+                headerPic.src = reader.result;
+                localStorage.setItem("profile", JSON.stringify(profile));
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    loadProfile();
+</script>
+
+</body>
+</html>

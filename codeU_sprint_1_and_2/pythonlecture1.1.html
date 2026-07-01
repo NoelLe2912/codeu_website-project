@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Python</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 350px;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Terminal Styles */
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ FULL-WIDTH HEADER -->
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ✅ MAIN CONTENT AREA (Resizable Panels) -->
+  <div class="main-content">
+    <!-- LEFT PANEL -->
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Introduction to Python Programming
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Your Journey into One of the World's Most Powerful Programming Languages
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Beginner Friendly</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Hands-On Practice</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Real-World Examples</span>
+          </div>
+        </section>
+
+        <!-- What is Python? -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">What is Python?</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python is a powerful, versatile programming language that's easy to learn and widely used across industries.
+            Created in 1991 by Guido van Rossum, Python has grown to become one of the most popular programming languages in the world.
+            Its simple, readable syntax makes it perfect for beginners, while its powerful capabilities make it a favorite among experienced developers.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What Can You Build with Python?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="flex items-start gap-4">
+                <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                  🌐
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800 mb-2">Web Applications</h4>
+                  <p class="text-gray-600">Build powerful websites and web apps using frameworks like Django and Flask. Companies like Instagram, Spotify, and Netflix use Python!</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                  📊
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800 mb-2">Data Science & AI</h4>
+                  <p class="text-gray-600">Analyze data, create visualizations, and build machine learning models. Python is the #1 language for data scientists and AI researchers.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                  🤖
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800 mb-2">Automation & Scripting</h4>
+                  <p class="text-gray-600">Automate repetitive tasks, process files, scrape websites, and more. Python can save you hours of manual work!</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="bg-yellow-500 text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                  🎮
+                </div>
+                <div>
+                  <h4 class="font-bold text-gray-800 mb-2">Games & Software</h4>
+                  <p class="text-gray-600">Create games, desktop applications, and software tools. From simple games to complex applications, Python can do it all.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💼 Career Boost:</span> Python developers are in high demand!
+              Learning Python opens doors to careers in web development, data science, artificial intelligence, cybersecurity, and more.
+            </p>
+          </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Why Do We Need Variables?</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Think of variables as labeled containers that store information your program needs to remember.
+            Just like you might write a phone number on a sticky note so you don't forget it,
+            variables help your program remember important data.
+          </p>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Real-World Analogy</h3>
+            <p class="text-lg text-gray-700 mb-4">
+              Imagine you're organizing a birthday party. You need to keep track of:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+              <li>The <span class="font-semibold text-blue-600">guest count</span> (a number)</li>
+              <li>The <span class="font-semibold text-blue-600">party theme</span> (text)</li>
+              <li>The <span class="font-semibold text-blue-600">budget</span> (a number with decimals)</li>
+              <li>Whether <span class="font-semibold text-blue-600">RSVPs are open</span> (yes or no)</li>
+            </ul>
+            <p class="text-lg text-gray-700 mt-4">
+              In Python, you'd store each of these pieces of information in a variable so you can use and update them throughout your program!
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">💾</div>
+              <h4 class="font-bold text-gray-800 mb-2">Store Data</h4>
+              <p class="text-gray-700">Keep information your program needs to use later</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">🔄</div>
+              <h4 class="font-bold text-gray-800 mb-2">Reuse Values</h4>
+              <p class="text-gray-700">Use the same value multiple times without retyping it</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">✏️</div>
+              <h4 class="font-bold text-gray-800 mb-2">Update Easily</h4>
+              <p class="text-gray-700">Change a value once and it updates everywhere</p>
+            </div>
+          </div>
+
+          <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <p class="text-gray-400 text-sm mb-2"># Without variables (repetitive and hard to update):</p>
+            <pre class="text-red-400 font-mono text-sm mb-4"><code>print("Welcome to Sarah's party!")
+print("Sarah has invited 25 guests")
+print("Sarah's budget is $500")</code></pre>
+
+            <p class="text-gray-400 text-sm mb-2"># With variables (flexible and easy to update):</p>
+            <pre class="text-green-400 font-mono text-sm"><code>host_name = "Sarah"
+guest_count = 25
+budget = 500
+
+print("Welcome to " + host_name + "'s party!")
+print(host_name + " has invited " + str(guest_count) + " guests")
+print(host_name + "'s budget is $" + str(budget))</code></pre>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎯 The Bottom Line:</span> Variables are the foundation of programming.
+              Once you understand how to store and work with data using variables, you'll be able to build programs that remember information,
+              make calculations, and respond to user input. Let's get started!
+            </p>
+          </div>
+        </section>
+
+    
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Ready to Write Your First Python Code?</h2>
+          <p class="text-xl mb-6">Let's dive into variables and start building your programming skills!</p>
+          <button class="bg-yellow-400 text-gray-900 px-10 py-4 rounded-lg hover:bg-yellow-300 transition font-bold text-lg shadow-lg">
+            Start Learning →
+          </button>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the examples from the lesson:
+
+host_name = &quot;Sarah&quot;
+guest_count = 25
+budget = 500
+
+print(&quot;Welcome to &quot; + host_name + &quot;'s party!&quot;)
+print(host_name + &quot; has invited &quot; + str(guest_count) + &quot; guests&quot;)
+print(host_name + &quot;'s budget is $&quot; + str(budget))"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ JS at the END -->
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        // Capture stdout
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        // Run user code
+        await pyodide.runPythonAsync(code);
+        
+        // Get output
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    // Initialize Python on load
+    initPyodide();
+    
+    // Allow Ctrl+Enter to run code
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

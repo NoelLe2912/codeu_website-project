@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 4: Functions and Interfaces</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+</head>
+
+<body class="h-full m-0 flex flex-col overflow-hidden">
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <div class="bg-gray-50 overflow-y-auto transition-[width] duration-100" style="width: 75%; min-width: 150px;" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 4: Functions and Interfaces
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Designing Functions That Work Together
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Interface Design</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Encapsulation</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Refactoring</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Drawing with Text -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Text-Based Drawing</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Before we dive into interface design, let's start with something simple: drawing shapes using text characters. This will help us understand how to build functions that work together.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Line Drawing</h3>
+            <p class="text-gray-700 mb-4">
+              We can create a simple horizontal line by repeating a character:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Draw a line of asterisks
+print('*' * 10)
+
+# Output: **********</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating a Simple Function</h3>
+            <p class="text-gray-700 mb-4">
+              Let's wrap this in a function so we can reuse it:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def draw_line(length):
+    """Draw a horizontal line of asterisks."""
+    print('*' * length)
+
+# Now we can use it
+draw_line(15)
+draw_line(8)
+
+# Output:
+# ***************
+# ********</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Concept:</span> By putting code in a function, we can reuse it with different parameters. This is the foundation of good program design!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Encapsulation -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Encapsulation: Wrapping Code in Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Encapsulation means taking a piece of code and putting it inside a function. This gives the code a name and makes it reusable.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Drawing a Square</h3>
+            <p class="text-gray-700 mb-4">
+              Here's code that draws a square using text:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6 mb-4">
+              <pre class="text-green-400 font-mono text-sm"><code># Without encapsulation (repetitive)
+print('*' * 5)
+print('*   *')
+print('*   *')
+print('*   *')
+print('*' * 5)</code></pre>
+            </div>
+            <p class="text-gray-700 mb-4">
+              Now let's encapsulate it in a function:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def draw_square():
+    """Draw a 5x5 square."""
+    print('*' * 5)
+    print('*   *')
+    print('*   *')
+    print('*   *')
+    print('*' * 5)
+
+draw_square()</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Benefits of Encapsulation</h4>
+              <ul class="text-gray-700 space-y-2">
+                <li>• Gives the code a meaningful name</li>
+                <li>• Makes code reusable</li>
+                <li>• Easier to understand and maintain</li>
+                <li>• Can be tested independently</li>
+              </ul>
+            </div>
+
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl">📋 When to Encapsulate</h4>
+              <ul class="text-gray-700 space-y-2">
+                <li>• Code that does a specific task</li>
+                <li>• Code you'll use more than once</li>
+                <li>• Code that's logically separate</li>
+                <li>• Code that's getting too complex</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Generalization -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Generalization: Adding Parameters</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Generalization means making a function more flexible by adding parameters. Instead of always doing the same thing, the function can adapt to different situations.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">From Specific to General</h3>
+            <p class="text-gray-700 mb-4">
+              Our draw_line function only draws asterisks. Let's make it more general:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># More general version
+def draw_line(char, length):
+    """Draw a horizontal line with any character."""
+    print(char * length)
+
+# Now we can draw with different characters
+draw_line('*', 10)
+draw_line('-', 20)
+draw_line('#', 15)
+
+# Output:
+# **********
+# --------------------
+# ###############</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Generalizing the Square</h3>
+            <p class="text-gray-700 mb-4">
+              Let's make our square function work with any size:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def draw_rectangle(width, height):
+    """Draw a rectangle with given dimensions."""
+    # Top edge
+    print('*' * width)
+    
+    # Middle rows
+    for i in range(height - 2):
+        print('*' + ' ' * (width - 2) + '*')
+    
+    # Bottom edge
+    print('*' * width)
+
+# Draw different sizes
+draw_rectangle(8, 4)
+print()  # Blank line
+draw_rectangle(12, 6)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">✓ Design Principle:</span> Start with a simple, specific function. Then add parameters to make it more general and reusable.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Interface Design -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Interface Design</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The interface of a function is how other code interacts with it—the function's name, its parameters, and what it does. Good interface design makes functions easy to use and understand.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What Makes a Good Interface?</h3>
+            <div class="space-y-4">
+              <div class="border-l-4 border-blue-500 pl-4">
+                <p class="font-bold text-gray-800 mb-2">Clear Purpose</p>
+                <p class="text-gray-700">The function should do one thing well. If you can't describe what it does in one sentence, it might be doing too much.</p>
+              </div>
+
+              <div class="border-l-4 border-green-500 pl-4">
+                <p class="font-bold text-gray-800 mb-2">Meaningful Name</p>
+                <p class="text-gray-700">The name should clearly indicate what the function does. Use verbs for actions: draw_line, calculate_area, print_report.</p>
+              </div>
+
+              <div class="border-l-4 border-purple-500 pl-4">
+                <p class="font-bold text-gray-800 mb-2">Appropriate Parameters</p>
+                <p class="text-gray-700">Include parameters for values that change, but don't add unnecessary complexity. Find the right balance.</p>
+              </div>
+
+              <div class="border-l-4 border-yellow-500 pl-4">
+                <p class="font-bold text-gray-800 mb-2">Predictable Behavior</p>
+                <p class="text-gray-700">The function should behave consistently and do what users expect based on its name and parameters.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Keyword Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              When functions have multiple parameters, keyword arguments make the interface clearer:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Hard to understand
+draw_rectangle(10, 5)
+
+# Clear and explicit
+draw_rectangle(width=10, height=5)
+
+# You can also mix positional and keyword arguments
+draw_rectangle(10, height=5)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Building Complex Functions -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Building Complex Functions from Simple Ones</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The real power of functions comes from combining them. Simple functions can be building blocks for more complex operations.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Pattern Generator</h3>
+            <p class="text-gray-700 mb-4">
+              Let's build a system for creating text patterns:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Basic building blocks
+def draw_line(char, length):
+    """Draw a horizontal line."""
+    print(char * length)
+
+def draw_centered_line(char, length, total_width):
+    """Draw a centered line within a given width."""
+    spaces = (total_width - length) // 2
+    print(' ' * spaces + char * length)
+
+# Build something more complex
+def draw_pyramid(height):
+    """Draw a pyramid pattern."""
+    for i in range(1, height + 1):
+        stars = 2 * i - 1
+        draw_centered_line('*', stars, 2 * height - 1)
+
+draw_pyramid(5)
+# Output:
+#     *
+#    ***
+#   *****
+#  *******
+# *********</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating a Diamond</h3>
+            <p class="text-gray-700 mb-4">
+              We can reuse our functions to create even more complex patterns:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def draw_diamond(size):
+    """Draw a diamond pattern."""
+    # Top half (including middle)
+    for i in range(1, size + 1):
+        stars = 2 * i - 1
+        draw_centered_line('*', stars, 2 * size - 1)
+    
+    # Bottom half
+    for i in range(size - 1, 0, -1):
+        stars = 2 * i - 1
+        draw_centered_line('*', stars, 2 * size - 1)
+
+draw_diamond(4)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Refactoring -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Refactoring: Improving Your Code</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Refactoring means reorganizing your code to make it better without changing what it does. It's like cleaning and organizing your room—everything still works, but it's neater and easier to find things.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">When to Refactor</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-yellow-50 rounded p-4">
+                <p class="font-bold text-yellow-800 mb-2">🔍 Signs You Need Refactoring</p>
+                <ul class="text-gray-700 space-y-1 text-sm">
+                  <li>• Duplicated code in multiple places</li>
+                  <li>• Functions that are too long</li>
+                  <li>• Confusing variable or function names</li>
+                  <li>• Hard to understand logic</li>
+                  <li>• Functions doing multiple things</li>
+                </ul>
+              </div>
+
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">✓ Benefits of Refactoring</p>
+                <ul class="text-gray-700 space-y-1 text-sm">
+                  <li>• Easier to understand</li>
+                  <li>• Easier to modify and extend</li>
+                  <li>• Fewer bugs</li>
+                  <li>• Better reusability</li>
+                  <li>• More professional code</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Refactoring Example</h3>
+            <p class="text-gray-700 mb-4">
+              Here's how refactoring improves code:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-red-50 rounded p-4">
+                <p class="font-bold text-red-800 mb-2">Before: Repetitive</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-red-400 font-mono text-xs"><code># Calculate areas
+width1 = 10
+height1 = 5
+area1 = width1 * height1
+print("Area:", area1)
+
+width2 = 8
+height2 = 6
+area2 = width2 * height2
+print("Area:", area2)
+
+width3 = 12
+height3 = 4
+area3 = width3 * height3
+print("Area:", area3)</code></pre>
+                </div>
+              </div>
+
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">After: Refactored</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-green-400 font-mono text-xs"><code>def calculate_area(width, height):
+    """Calculate rectangle area."""
+    return width * height
+
+def display_area(width, height):
+    """Calculate and display area."""
+    area = calculate_area(width, height)
+    print(f"Area: {area}")
+
+display_area(10, 5)
+display_area(8, 6)
+display_area(12, 4)</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: Docstrings -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Documenting with Docstrings</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A docstring is documentation that explains what a function does, what parameters it takes, and what it returns. Good docstrings make your code much easier to use.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Docstring Format</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def draw_rectangle(width, height, char='*'):
+    """Draw a rectangle with given dimensions.
+    
+    Args:
+        width: integer, the width of the rectangle
+        height: integer, the height of the rectangle
+        char: string, character to use (default: '*')
+    
+    Returns:
+        None (prints the rectangle)
+    """
+    # Top edge
+    print(char * width)
+    
+    # Middle rows
+    for i in range(height - 2):
+        print(char + ' ' * (width - 2) + char)
+    
+    # Bottom edge
+    print(char * width)</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl">What to Include</h4>
+              <ul class="text-gray-700 space-y-2">
+                <li>• Brief description of what it does</li>
+                <li>• Each parameter and its type</li>
+                <li>• What the function returns</li>
+                <li>• Any important side effects</li>
+                <li>• Preconditions if needed</li>
+              </ul>
+            </div>
+
+            <div class="bg-purple-50 rounded-lg p-6">
+              <h4 class="font-bold text-purple-800 mb-3 text-xl">Best Practices</h4>
+              <ul class="text-gray-700 space-y-2">
+                <li>• Use triple quotes (""")</li>
+                <li>• Keep it concise but complete</li>
+                <li>• Write in present tense</li>
+                <li>• Update when you change code</li>
+                <li>• Be consistent in style</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 8: Development Plan -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">A Development Plan</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Here's a proven process for building programs with functions. Following these steps will help you write better code.
+          </p>
+
+          <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-8">
+            <div class="space-y-6">
+              <div class="bg-white rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                  <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">1</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800 mb-2">Start Simple</h4>
+                    <p class="text-gray-700">Write a small program with no functions. Get it working first.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                  <div class="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">2</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800 mb-2">Encapsulate</h4>
+                    <p class="text-gray-700">Find a coherent piece of code and wrap it in a function. Give it a good name.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                  <div class="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">3</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800 mb-2">Generalize</h4>
+                    <p class="text-gray-700">Add parameters to make the function more flexible and reusable.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                  <div class="bg-yellow-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">4</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800 mb-2">Repeat</h4>
+                    <p class="text-gray-700">Continue steps 1-3 until you have a set of working functions.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                  <div class="bg-pink-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">5</div>
+                  <div>
+                    <h4 class="font-bold text-gray-800 mb-2">Refactor</h4>
+                    <p class="text-gray-700">Look for ways to improve the code. Remove duplication, improve names, simplify logic.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 9: Preconditions and Postconditions -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Preconditions and Postconditions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Functions are like contracts. The caller and the function each have responsibilities. Understanding these helps prevent bugs.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-yellow-50 rounded-lg p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-4">Preconditions</h3>
+              <p class="text-gray-700 mb-4">
+                Requirements that must be true BEFORE the function runs. These are the caller's responsibility.
+              </p>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-yellow-400 font-mono text-xs"><code>def calculate_average(numbers):
+    """Calculate the average of numbers.
+    
+    Preconditions:
+    - numbers must be a list
+    - numbers must not be empty
+    - all items must be numbers
+    """
+    return sum(numbers) / len(numbers)</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-4">Postconditions</h3>
+              <p class="text-gray-700 mb-4">
+                What must be true AFTER the function runs. These are the function's responsibility.
+              </p>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-xs"><code>def sort_list(items):
+    """Sort a list of items.
+    
+    Postconditions:
+    - Returns a new sorted list
+    - Original list is unchanged
+    - All items from input are
+      in output
+    """
+    return sorted(items)</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">🐛 Debugging Tip:</span> If preconditions are met but postconditions aren't, the bug is in the function. If preconditions aren't met, the bug is in the calling code.
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Try these challenges to master interface design!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write a function draw_box(width, height, char) that draws a filled rectangle</li>
+              <li>• Create a function draw_triangle(size) that draws a right triangle</li>
+              <li>• Write repeat_pattern(pattern, count) that prints a string pattern multiple times</li>
+              <li>• Create draw_border(text) that prints text with a decorative border around it</li>
+              <li>• Write a function make_banner(text, width) that centers text in a banner</li>
+              <li>• Create a refactored set of functions to draw complex patterns like checkerboards</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="w-1.5 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors duration-200" id="resizer"></div>
+
+    <div class="flex-1 bg-[#1e1e1e] overflow-y-auto flex flex-col">
+      <div class="font-mono text-[#d4d4d4] p-5 h-full flex flex-col">
+        <div class="text-[#4ec9b0] mb-5 text-2xl font-bold">🐍 Python Practice Terminal</div>
+        
+        <div class="flex-1 flex flex-col gap-5">
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Python Code:</label>
+            <textarea id="code" class="flex-1 bg-[#2d2d2d] text-[#d4d4d4] border border-[#3e3e3e] rounded px-3 py-3 font-mono text-sm resize-none min-h-[200px] focus:outline-none focus:border-[#007acc]" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 4!
+
+# Example: Draw a line
+def draw_line(char, length):
+    print(char * length)
+
+draw_line('*', 15)
+draw_line('-', 20)
+
+# Example: Draw a rectangle
+def draw_rectangle(width, height):
+    print('*' * width)
+    for i in range(height - 2):
+        print('*' + ' ' * (width - 2) + '*')
+    print('*' * width)
+
+draw_rectangle(10, 5)"></textarea>
+            <button id="runBtn" class="bg-[#0e639c] text-white border-0 px-5 py-2.5 rounded cursor-pointer text-sm font-bold hover:bg-[#1177bb] transition-colors mt-2.5 disabled:bg-[#555] disabled:cursor-not-allowed" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Output:</label>
+            <div id="output" class="flex-1 bg-[#1e1e1e] border border-[#3e3e3e] rounded px-3 py-3 overflow-y-auto whitespace-pre-wrap text-sm min-h-[200px]"><span class="text-[#4ec9b0] italic">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="text-[#4ec9b0]">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="text-[#f48771]">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="text-[#f48771]">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="text-[#4ec9b0] italic">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="text-[#f48771]">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

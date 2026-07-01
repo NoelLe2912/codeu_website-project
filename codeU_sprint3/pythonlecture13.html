@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 13: Files and Databases</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 13: Files and Databases
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Persistent Data Storage for Long-Running Programs
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">File I/O</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Persistence</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Databases</span>
+          </div>
+        </section>
+
+        <!-- Section 1: File Paths -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Filenames and Paths</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Before working with files, you need to locate them. Files are organized in directories (folders), and paths specify where files live in the filesystem hierarchy.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Understanding Paths</h3>
+            <p class="text-gray-700 mb-4">
+              Paths identify the location of files and directories:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual example (won't run in browser terminal)
+# import os
+
+# Get current directory
+# os.getcwd()
+# '/home/username'
+
+# Absolute path (starts from root)
+# '/home/username/documents/memo.txt'
+
+# Relative path (relative to current directory)
+# 'documents/memo.txt'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Path Types</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-blue-800 mb-2">Absolute Path</p>
+                <p class="text-sm text-gray-700 mb-2">Complete location from root</p>
+                <p class="text-xs text-gray-600 font-mono">/home/user/file.txt</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Relative Path</p>
+                <p class="text-sm text-gray-700 mb-2">Location from current directory</p>
+                <p class="text-xs text-gray-600 font-mono">documents/file.txt</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Path Operations (Conceptual)</h3>
+            <p class="text-gray-700 mb-4">
+              Common operations for working with paths:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Join paths (works on any OS)
+# os.path.join('photos', 'jan-2023', 'photo1.jpg')
+# 'photos/jan-2023/photo1.jpg'
+
+# Check if path exists
+# os.path.exists('photos')
+# True
+
+# Check if it's a file
+# os.path.isfile('photo.jpg')
+# True
+
+# Check if it's a directory
+# os.path.isdir('photos')
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Platform Differences:</span> Windows uses backslashes (\) while Mac/Linux use forward slashes (/). Use os.path.join() to write cross-platform code!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: F-Strings -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">F-Strings for Formatting</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            F-strings let you embed Python expressions directly in strings, making it easy to create formatted text for writing to files or displaying data.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic F-String Syntax</h3>
+            <p class="text-gray-700 mb-4">
+              Prefix strings with 'f' and use curly braces for expressions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>num_camels = 23
+num_years = 1.5
+
+# Simple variable substitution
+f'I have spotted {num_camels} camels'
+# 'I have spotted 23 camels'
+
+# Multiple expressions
+f'In {num_years} years I have spotted {num_camels} camels'
+# 'In 1.5 years I have spotted 23 camels'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">F-Strings with Expressions</h3>
+            <p class="text-gray-700 mb-4">
+              Include calculations and function calls:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Expressions and function calls
+line = f'In {round(num_years * 12)} months I spotted {num_camels} camels'
+line
+# 'In 18 months I spotted 23 camels'
+
+# Can include any data type
+t = [1, 2, 3]
+d = {'one': 1}
+f'List: {t}, Dict: {d}'
+# "List: [1, 2, 3], Dict: {'one': 1}"</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Writing to Files (Conceptual)</h3>
+            <p class="text-gray-700 mb-4">
+              F-strings make file writing clean and readable:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual example
+# writer = open('data.txt', 'w')
+# writer.write(f'Years: {num_years}\n')
+# writer.write(f'Camels: {num_camels}\n')
+# writer.close()
+
+# Result in file:
+# Years: 1.5
+# Camels: 23</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">💡 Pro Tip:</span> F-strings are cleaner and faster than older string formatting methods like % or .format()!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Serialization -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Serialization: Saving Data Structures</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Serialization converts complex data structures (like dictionaries) into strings that can be saved to files. Deserialization converts them back.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Serialize?</h3>
+            <p class="text-gray-700 mb-4">
+              Save configuration data, user preferences, or application state:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>config = {
+    'photo_dir': 'photos',
+    'data_dir': 'photo_info',
+    'extensions': ['jpg', 'jpeg'],
+}
+
+# This dictionary needs to be saved to a file
+# How do we convert it to text?</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">YAML Format (Conceptual)</h3>
+            <p class="text-gray-700 mb-4">
+              YAML is human-readable and easy for programs to parse:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual YAML example
+# import yaml
+
+# Write to file
+# writer = open('config.yaml', 'w')
+# yaml.dump(config, writer)
+# writer.close()
+
+# YAML format looks like:
+# data_dir: photo_info
+# extensions:
+# - jpg
+# - jpeg
+# photo_dir: photos
+
+# Read back
+# reader = open('config.yaml')
+# config_readback = yaml.safe_load(reader)
+# config_readback
+# {'data_dir': 'photo_info', ...}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Key Terms</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-green-800">Serialization:</span> Object → String (for saving)</p>
+              <p><span class="font-bold text-green-800">Deserialization:</span> String → Object (for loading)</p>
+              <p><span class="font-bold text-green-800">Round-trip:</span> Serialize then deserialize = equivalent object</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📦 Common Formats:</span> JSON, YAML, XML, and Python's pickle are all serialization formats with different trade-offs.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Databases and Shelve -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Databases: Persistent Key-Value Storage</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Databases store data more efficiently than text files. Python's shelve module provides a simple dictionary-like database called a key-value store.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What is a Database?</h3>
+            <p class="text-gray-700 mb-4">
+              A file organized for efficient data operations:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• More efficient than reading entire text files</p>
+              <p>• Can handle large amounts of data</p>
+              <p>• Supports fast lookups and updates</p>
+              <p>• Provides data persistence between program runs</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Shelve: Dictionary-Like Database</h3>
+            <p class="text-gray-700 mb-4">
+              Shelve objects work like dictionaries but save to disk:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual example
+# import shelve
+
+# Open a shelf (creates if needed)
+# db = shelve.open('captions', 'c')
+
+# Use like a dictionary
+# db['jan-2023/photo1.jpg'] = 'Cat nose'
+# db['jan-2023/photo2.jpg'] = 'Sunset'
+
+# Retrieve values
+# db['jan-2023/photo1.jpg']
+# 'Cat nose'
+
+# Update values
+# db['jan-2023/photo1.jpg'] = 'Close up of cat nose'
+
+# Close when done
+# db.close()</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Dictionary Methods Work Too</h3>
+            <p class="text-gray-700 mb-4">
+              Shelves support most dictionary operations:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Check if key exists
+# 'jan-2023/photo1.jpg' in db
+# True
+
+# Get keys and values
+# list(db.keys())
+# ['jan-2023/photo1.jpg', 'jan-2023/photo2.jpg']
+
+# Loop through
+# for key in db:
+#     print(key, ':', db[key])</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Important:</span> Shelves create multiple files (.dat for data, .dir for directory info). Always close shelves when done!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Storing Complex Data -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Storing Data Structures in Shelves</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Shelves can store complex data structures like lists and dictionaries as values. However, there's a tricky gotcha when updating mutable values!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Lists as Values</h3>
+            <p class="text-gray-700 mb-4">
+              Store lists of related items:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Example: anagram database
+# def sort_word(word):
+#     return ''.join(sorted(word))
+
+# db = shelve.open('anagrams', 'n')
+
+# Store a list
+# key = sort_word('pots')  # 'opst'
+# db[key] = ['pots']
+# db[key]
+# ['pots']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Update Gotcha!</h3>
+            <p class="text-gray-700 mb-4">
+              You can't modify shelf values in place:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code># WRONG - doesn't update the shelf!
+# db[key].append('tops')
+# db[key]
+# ['pots']  # Still only one word!
+
+# The problem: Getting the value creates a copy
+# Modifying the copy doesn't affect the shelf</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Correct Way</h3>
+            <p class="text-gray-700 mb-4">
+              Read, modify, write back:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># CORRECT - read, modify, write
+# anagram_list = db[key]      # Read
+# anagram_list.append('tops')  # Modify
+# db[key] = anagram_list       # Write back
+
+# db[key]
+# ['pots', 'tops']  # Now it works!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🔑 Remember:</span> Always use the three-step pattern: read the value, modify it, write it back. Direct modification doesn't work!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Hash Functions -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Hash Functions and File Comparison</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Hash functions convert data into fixed-size digests. Files with identical content produce identical digests, making it efficient to find duplicates.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Use Hash Functions?</h3>
+            <p class="text-gray-700 mb-4">
+              Comparing file contents directly is slow for many files:
+            </p>
+            <div class="space-y-3 text-gray-700 ml-4">
+              <p><span class="font-bold text-red-800">Slow way:</span> Compare every pair of files (N² comparisons)</p>
+              <p><span class="font-bold text-green-800">Fast way:</span> Compute digest for each file, compare digests</p>
+              <p>• Same content → Same digest</p>
+              <p>• Different content → Different digest (almost always)</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">MD5 Hash Example (Conceptual)</h3>
+            <p class="text-gray-700 mb-4">
+              MD5 produces a 128-bit digest from any amount of data:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual example
+# import hashlib
+
+# def md5_digest(filename):
+#     data = open(filename, 'rb').read()
+#     md5_hash = hashlib.md5()
+#     md5_hash.update(data)
+#     return md5_hash.hexdigest()
+
+# Two different files
+# md5_digest('photo1.jpg')
+# 'aa1d2fc25b7ae247b2931f5a0882fa37'
+
+# md5_digest('photo2.jpg')
+# '6a501b11b01f89af9c3f6591d7f02c49'
+
+# Different content = different digests!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Finding Duplicates</h3>
+            <p class="text-gray-700 mb-4">
+              Map digests to file paths to find duplicates:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Strategy:
+# 1. For each file, compute MD5 digest
+# 2. Store in shelf: digest → list of paths
+# 3. Any digest with 2+ paths = duplicate files!
+
+# digest_db[digest1] = ['path/to/file1.jpg']
+# digest_db[digest2] = ['path/to/file2.jpg', 'path/to/copy.jpg']
+#                       ^^^ These are duplicates!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🔐 Real World:</span> Hash functions are also used for passwords, digital signatures, and detecting data corruption!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Walking Directories -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Recursively Searching Directories</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            To find all files in a directory tree, we need to search recursively through subdirectories. This is a classic application of recursion!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Walk Function (Conceptual)</h3>
+            <p class="text-gray-700 mb-4">
+              Recursively visit every file and subdirectory:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Conceptual recursive directory walker
+# def walk(dirname):
+#     for name in os.listdir(dirname):
+#         path = os.path.join(dirname, name)
+#         
+#         if os.path.isfile(path):
+#             print(path)  # Found a file
+#         elif os.path.isdir(path):
+#             walk(path)   # Recurse into subdirectory
+
+# walk('photos')
+# Output:
+# photos/notes.txt
+# photos/jan-2023/photo1.jpg
+# photos/jan-2023/photo2.jpg
+# photos/feb-2023/photo1.jpg</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How It Works</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> List all items in the current directory</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> For each item, check if it's a file or directory</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> If file → process it (print, hash, etc.)</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> If directory → call walk() on it (recursion!)</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Filtering by Extension</h3>
+            <p class="text-gray-700 mb-4">
+              Process only specific file types:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># def is_image(path, extensions):
+#     for ext in extensions:
+#         if path.endswith(ext):
+#             return True
+#     return False
+
+# def walk_images(dirname, extensions):
+#     for name in os.listdir(dirname):
+#         path = os.path.join(dirname, name)
+#         
+#         if os.path.isfile(path):
+#             if is_image(path, extensions):
+#                 process_image(path)
+#         elif os.path.isdir(path):
+#             walk_images(path, extensions)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🌳 Tree Structure:</span> Directory trees are perfect for recursion—each subdirectory is itself a smaller tree!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Ephemeral vs Persistent -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Ephemeral vs Persistent Programs</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Understanding the difference between temporary and long-lasting data is crucial for designing robust programs.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h3 class="text-xl font-semibold text-blue-800 mb-4">Ephemeral Programs</h3>
+              <div class="space-y-2 text-gray-700">
+                <p>• Run for a short time</p>
+                <p>• Data exists only in memory</p>
+                <p>• Everything lost when program ends</p>
+                <p>• Start fresh each run</p>
+                <p><span class="font-bold">Examples:</span> calculators, converters, simple scripts</p>
+              </div>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h3 class="text-xl font-semibold text-green-800 mb-4">Persistent Programs</h3>
+              <div class="space-y-2 text-gray-700">
+                <p>• Run indefinitely or frequently</p>
+                <p>• Save data to disk</p>
+                <p>• Remember state between runs</p>
+                <p>• Pick up where they left off</p>
+                <p><span class="font-bold">Examples:</span> databases, web servers, games with save files</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Persistence Mechanisms</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Text files:</span> Simple, human-readable, slow for large data</p>
+              <p><span class="font-bold text-green-600">Databases:</span> Fast, efficient, supports complex queries</p>
+              <p><span class="font-bold text-purple-600">Serialized objects:</span> Save entire data structures</p>
+              <p><span class="font-bold text-orange-600">Cloud storage:</span> Remote, accessible anywhere</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💾 Design Choice:</span> Choose persistence based on your needs. Games save player progress. Web apps save user data. Calculators don't need to save anything!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging File Operations</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            File operations introduce new debugging challenges—invisible whitespace, platform differences, and permission errors.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Invisible Whitespace Problems</h3>
+            <p class="text-gray-700 mb-4">
+              Use repr() to see hidden characters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>s = '1 2\t 3\n 4'
+
+# Printing hides whitespace
+print(s)
+# 1 2	 3
+#  4
+
+# repr() shows everything
+print(repr(s))
+# '1 2\t 3\n 4'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common File Issues</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• <span class="font-bold">Line endings:</span> \n (Unix), \r\n (Windows), \r (old Mac)</p>
+              <p>• <span class="font-bold">File encoding:</span> UTF-8, ASCII, Latin-1 incompatibilities</p>
+              <p>• <span class="font-bold">Case sensitivity:</span> Unix is case-sensitive, Windows often isn't</p>
+              <p>• <span class="font-bold">Path separators:</span> / vs \ on different platforms</p>
+              <p>• <span class="font-bold">Permissions:</span> Can't read/write without proper access</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🔍 Debugging Tip:</span> When file operations fail mysteriously, check the path, permissions, and use repr() to inspect strings for hidden characters!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master persistent data storage!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write a function that uses f-strings to format data for file output</li>
+              <li>• Create a simulated database using a dictionary to understand key-value stores</li>
+              <li>• Implement a function that compares two text strings character by character</li>
+              <li>• Build an anagram database using nested dictionaries</li>
+              <li>• Write a recursive function to count all items in nested lists</li>
+              <li>• Create a hash-like function using string operations</li>
+              <li>• Practice the read-modify-write pattern for updating complex data</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Since we can't access files, let's practice the concepts!
+
+# Example: F-strings
+num_camels = 23
+num_years = 1.5
+
+message = f'In {num_years} years I spotted {num_camels} camels'
+print(message)
+
+months = f'That\'s {round(num_years * 12)} months!'
+print(months)
+
+# Example: Simulated database (dictionary)
+database = {}
+
+# Adding data like a shelf
+database['user1'] = {'name': 'Alice', 'score': 100}
+database['user2'] = {'name': 'Bob', 'score': 85}
+
+print('\nDatabase contents:')
+for key in database:
+    print(f'{key}: {database[key]}')
+
+# Example: Updating complex values (the gotcha!)
+# WRONG way:
+# database['user1']['score'] += 10  # This works for dicts!
+
+# But in a real shelf, you'd need:
+user_data = database['user1']
+user_data['score'] += 10
+database['user1'] = user_data
+
+print('\nAfter update:', database['user1'])
+
+# Example: Simple hash function
+def simple_hash(text):
+    total = 0
+    for char in text:
+        total += ord(char)
+    return total
+
+print('\nSimple hashes:')
+print('Hash of \"hello\":', simple_hash('hello'))
+print('Hash of \"world\":', simple_hash('world'))
+print('Hash of \"hello\":', simple_hash('hello'))  # Same!
+
+# Example: Anagram storage pattern
+def sort_word(word):
+    return ''.join(sorted(word))
+
+anagram_db = {}
+words = ['pots', 'tops', 'stop', 'spot', 'cat', 'act']
+
+for word in words:
+    key = sort_word(word)
+    if key not in anagram_db:
+        anagram_db[key] = [word]
+    else:
+        anagram_db[key].append(word)
+
+print('\nAnagram groups:')
+for key, word_list in anagram_db.items():
+    if len(word_list) > 1:
+        print(f'{key}: {word_list}')"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

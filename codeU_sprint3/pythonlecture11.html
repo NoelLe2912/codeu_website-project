@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 11: Tuples</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 11: Tuples
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Immutable Sequences for Efficient Data Handling
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Immutable</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Hashable</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Pack/Unpack</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Tuples Like Lists -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Tuples Are Like Lists</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A tuple is a sequence of values, just like a list. Values can be any type and are indexed by integers. The key difference? Tuples are immutable—once created, they cannot be changed.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Tuples</h3>
+            <p class="text-gray-700 mb-4">
+              Use commas to create tuples (parentheses are optional but common):
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Without parentheses
+t = 'l', 'u', 'p', 'i', 'n'
+type(t)
+# tuple
+
+# With parentheses (more common)
+t = ('l', 'u', 'p', 'i', 'n')
+type(t)
+# tuple</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Single-Element Tuples</h3>
+            <p class="text-gray-700 mb-4">
+              You must include a trailing comma for single-element tuples:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># With comma - this is a tuple
+t1 = 'p',
+type(t1)
+# tuple
+
+# Without comma - this is just a string
+t2 = ('p')
+type(t2)
+# str</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using the tuple() Function</h3>
+            <p class="text-gray-700 mb-4">
+              Convert sequences to tuples or create empty tuples:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Empty tuple
+t = tuple()
+t
+# ()
+
+# Convert string to tuple
+t = tuple('lupin')
+t
+# ('l', 'u', 'p', 'i', 'n')</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">List Operations Work on Tuples</h3>
+            <p class="text-gray-700 mb-4">
+              Most list operators work with tuples too:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = ('l', 'u', 'p', 'i', 'n')
+
+# Indexing
+t[0]
+# 'l'
+
+# Slicing
+t[1:3]
+# ('u', 'p')
+
+# Concatenation
+tuple('lup') + ('i', 'n')
+# ('l', 'u', 'p', 'i', 'n')
+
+# Repetition
+tuple('spam') * 2
+# ('s', 'p', 'a', 'm', 's', 'p', 'a', 'm')</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📝 Note:</span> Avoid using "tuple" as a variable name—it's the name of a built-in function!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Tuples Are Immutable -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">But Tuples Are Immutable</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The critical difference between tuples and lists: you cannot modify tuple elements. This immutability makes tuples hashable and safe to use as dictionary keys.
+          </p>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Cannot Modify Elements</h3>
+            <p class="text-gray-700 mb-4">
+              Attempting to change a tuple causes a TypeError:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>t = ('l', 'u', 'p', 'i', 'n')
+t[0] = 'L'
+# TypeError: 'tuple' object does not support item assignment</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">No Modifying Methods</h3>
+            <p class="text-gray-700 mb-4">
+              Tuples don't have methods like append() or remove():
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>t.remove('l')
+# AttributeError: 'tuple' object has no attribute 'remove'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Tuples as Dictionary Keys</h3>
+            <p class="text-gray-700 mb-4">
+              Because tuples are immutable, they're hashable and can be used as dictionary keys:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>d = {}
+d[1, 2] = 3
+d[3, 4] = 7
+
+# Look up using a tuple
+d[1, 2]
+# 3
+
+# Or use a variable
+t = (3, 4)
+d[t]
+# 7</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Tuples as Dictionary Values</h3>
+            <p class="text-gray-700 mb-4">
+              Tuples can also be values in dictionaries:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = tuple('abc')
+d = {'key': t}
+d
+# {'key': ('a', 'b', 'c')}</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Lists: Mutable</h4>
+              <p class="text-gray-700 mb-2">• Can change elements</p>
+              <p class="text-gray-700 mb-2">• Not hashable</p>
+              <p class="text-gray-700">• Cannot be dict keys</p>
+            </div>
+
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl">✓ Tuples: Immutable</h4>
+              <p class="text-gray-700 mb-2">• Cannot change elements</p>
+              <p class="text-gray-700 mb-2">• Hashable</p>
+              <p class="text-gray-700">• Can be dict keys</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Tuple Assignment -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Tuple Assignment</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python allows you to assign multiple values to multiple variables in a single statement. This elegant feature makes many operations simpler and more readable.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Tuple Assignment</h3>
+            <p class="text-gray-700 mb-4">
+              Assign multiple values at once:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>a, b = 1, 2
+
+# Values are assigned left to right
+a, b
+# (1, 2)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Works with Any Sequence</h3>
+            <p class="text-gray-700 mb-4">
+              The right side can be any sequence—list, tuple, or string:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Split an email address
+email = 'monty@python.org'
+username, domain = email.split('@')
+
+username, domain
+# ('monty', 'python.org')</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Must Match Length</h3>
+            <p class="text-gray-700 mb-4">
+              The number of variables must equal the number of values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>a, b = 1, 2, 3
+# ValueError: too many values to unpack (expected 2)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Swapping Values</h3>
+            <p class="text-gray-700 mb-4">
+              Swap variables without a temporary variable:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Traditional way with temp variable
+temp = a
+a = b
+b = temp
+
+# Elegant way with tuple assignment
+a, b = b, a</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Tuple Assignment in Loops</h3>
+            <p class="text-gray-700 mb-4">
+              Use with items() to loop through dictionaries elegantly:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>d = {'one': 1, 'two': 2}
+
+# Concise version
+for key, value in d.items():
+    print(key, '->', value)
+
+# Output:
+# one -> 1
+# two -> 2</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Elegant Pattern:</span> Tuple assignment makes code cleaner and more Pythonic. Use it whenever you're unpacking sequences!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Tuples as Return Values -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Tuples as Return Values</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Functions can only return one value—but if that value is a tuple, you can effectively return multiple values. This is a powerful and common pattern.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Built-in Example: divmod()</h3>
+            <p class="text-gray-700 mb-4">
+              divmod() returns both quotient and remainder as a tuple:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>divmod(7, 3)
+# (2, 1)
+
+# Use tuple assignment to unpack
+quotient, remainder = divmod(7, 3)
+quotient
+# 2
+remainder
+# 1</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Custom Function Example</h3>
+            <p class="text-gray-700 mb-4">
+              Return multiple values from your own functions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def min_max(t):
+    return min(t), max(t)
+
+# Returns a tuple
+min_max([2, 4, 1, 3])
+# (1, 4)
+
+# Unpack the results
+low, high = min_max([2, 4, 1, 3])
+low, high
+# (1, 4)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎯 Use Case:</span> Returning tuples is perfect when you need to compute multiple related values together—like coordinates, statistics, or results from complex calculations.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Argument Packing -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Argument Packing and Unpacking</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The * operator lets you write functions that accept any number of arguments, and it lets you pass sequences as separate arguments. This creates flexible, powerful functions.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Packing: Variable Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              Use *args to accept any number of arguments:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def mean(*args):
+    return sum(args) / len(args)
+
+# Call with any number of arguments
+mean(1, 2, 3)
+# 2.0
+
+mean(1, 2, 3, 4, 5)
+# 3.0</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Unpacking: Sequence to Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              Use * to unpack a sequence into separate arguments:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = (7, 3)
+
+# Without unpacking - error!
+divmod(t)
+# TypeError: divmod expected 2 arguments, got 1
+
+# With unpacking - works!
+divmod(*t)
+# (2, 1)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Practical Example: Trimmed Mean</h3>
+            <p class="text-gray-700 mb-4">
+              Combine packing and unpacking for flexible functions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def trimmed_mean(*args):
+    # Find min and max
+    low, high = min(args), max(args)
+    
+    # Remove them
+    trimmed = list(args)
+    trimmed.remove(low)
+    trimmed.remove(high)
+    
+    # Compute mean (unpack trimmed list)
+    return mean(*trimmed)
+
+mean(1, 2, 3, 10)
+# 4.0
+
+trimmed_mean(1, 2, 3, 10)
+# 2.5  (removes 1 and 10, averages 2 and 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">💡 Real-World Use:</span> Trimmed means are used in sports like diving and gymnastics to reduce the impact of outlier scores from individual judges.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Zip -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Pairing Elements with zip()</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The zip() function pairs up elements from multiple sequences, making it easy to process corresponding items together—like the teeth of a zipper coming together.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Zipping</h3>
+            <p class="text-gray-700 mb-4">
+              Loop through two sequences simultaneously:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>scores1 = [1, 2, 4, 5, 1, 5, 2]
+scores2 = [5, 5, 2, 2, 5, 2, 3]
+
+for pair in zip(scores1, scores2):
+    print(pair)
+
+# Output:
+# (1, 5)
+# (2, 5)
+# (4, 2)
+# (5, 2)
+# (1, 5)
+# (5, 2)
+# (2, 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Unpacking Pairs</h3>
+            <p class="text-gray-700 mb-4">
+              Use tuple assignment to work with paired values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>wins = 0
+for team1, team2 in zip(scores1, scores2):
+    if team1 > team2:
+        wins += 1
+
+wins
+# 3</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Lists of Tuples</h3>
+            <p class="text-gray-700 mb-4">
+              Convert a zip object to a list of tuples:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = list(zip(scores1, scores2))
+t
+# [(1, 5), (2, 5), (4, 2), (5, 2), (1, 5), (5, 2), (2, 3)]
+
+# Get the last game result
+t[-1]
+# (2, 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Dictionaries from Pairs</h3>
+            <p class="text-gray-700 mb-4">
+              Combine zip() and dict() to map letters to positions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>letters = 'abcdefghijklmnopqrstuvwxyz'
+numbers = range(len(letters))
+letter_map = dict(zip(letters, numbers))
+
+letter_map['a'], letter_map['z']
+# (0, 25)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Enumerate for Indices</h3>
+            <p class="text-gray-700 mb-4">
+              Use enumerate() when you need both indices and elements:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for index, element in enumerate('abc'):
+    print(index, element)
+
+# Output:
+# 0 a
+# 1 b
+# 2 c</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: Comparing and Sorting -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Comparing and Sorting Tuples</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Tuples can be compared and sorted. Python compares element by element from left to right, making this useful for custom sorting strategies.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Tuple Comparison</h3>
+            <p class="text-gray-700 mb-4">
+              Tuples are compared element by element:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>(0, 1, 2) < (0, 3, 4)
+# True (1 < 3, so first tuple is smaller)
+
+# Later elements don't matter if earlier ones differ
+(0, 1, 2000000) < (0, 3, 4)
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Sorting with Default Behavior</h3>
+            <p class="text-gray-700 mb-4">
+              Sort tuples by first element, then second to break ties:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>counter = {'b': 1, 'a': 3, 'n': 2}
+items = counter.items()
+
+sorted(items)
+# [('a', 3), ('b', 1), ('n', 2)]</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Custom Sort Keys</h3>
+            <p class="text-gray-700 mb-4">
+              Use a key function to sort by specific criteria:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def second_element(t):
+    return t[1]
+
+# Sort by count (second element)
+sorted_items = sorted(items, key=second_element)
+sorted_items
+# [('b', 1), ('n', 2), ('a', 3)]
+
+# Get most common letter
+sorted_items[-1]
+# ('a', 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using max() with Key</h3>
+            <p class="text-gray-700 mb-4">
+              Find maximum without sorting the entire list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># More efficient - no sorting needed
+max(items, key=second_element)
+# ('a', 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Performance Tip:</span> Use max() or min() with a key function when you only need the extreme value—it's faster than sorting the entire collection.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Inverting Dictionaries -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Inverting a Dictionary</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Sometimes you need to flip a dictionary—making values into keys and keys into values. Since values don't have to be unique, the inverted dictionary uses lists to handle duplicates.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Problem</h3>
+            <p class="text-gray-700 mb-4">
+              Dictionary values can repeat, but keys cannot:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>d = {'p': 1, 'a': 1, 'r': 2, 'o': 1, 't': 1}
+
+# If we invert this:
+# Multiple letters have count 1
+# Need: {1: ['p', 'a', 'o', 't'], 2: ['r']}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Solution</h3>
+            <p class="text-gray-700 mb-4">
+              Map each value to a list of keys with that value:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def invert_dict(d):
+    new = {}
+    for key, value in d.items():
+        if value not in new:
+            new[value] = [key]
+        else:
+            new[value].append(key)
+    return new
+
+d = {'p': 1, 'a': 1, 'r': 2, 'o': 1, 't': 1}
+invert_dict(d)
+# {1: ['p', 'a', 'o', 't'], 2: ['r']}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎯 Pattern:</span> This is the first example where dictionary values are lists—a powerful compound data structure you'll use often!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Compound Data Structures</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            As data structures get more complex—lists of tuples, dictionaries with tuple keys and list values—debugging becomes harder. The structshape module helps visualize complex structures.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using structshape</h3>
+            <p class="text-gray-700 mb-4">
+              The structshape function summarizes data structure types:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>from structshape import structshape
+
+# Simple list
+t = [1, 2, 3]
+structshape(t)
+# 'list of 3 int'
+
+# List of lists
+t2 = [[1,2], [3,4], [5,6]]
+structshape(t2)
+# 'list of 3 list of 2 int'
+
+# Mixed types
+t3 = [1, 2, 3, 4.0, '5', '6', [7], [8], 9]
+structshape(t3)
+# 'list of (3 int, float, 2 str, 2 list of int, int)'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Complex Structures</h3>
+            <p class="text-gray-700 mb-4">
+              structshape handles tuples, dictionaries, and nested combinations:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># List of tuples
+s = 'abc'
+lt = list(zip([1, 2, 3], s))
+structshape(lt)
+# 'list of 3 tuple of (int, str)'
+
+# Dictionary
+d = dict(lt)
+structshape(d)
+# 'dict of 3 int->str'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🔧 Debugging Tip:</span> When working with complex nested structures, use structshape to quickly verify that your data has the expected structure and types.
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master tuples with these challenges!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Explore hashability: Create a tuple containing a list and try using it as a dict key</li>
+              <li>• Implement a Caesar cipher using letter_map and tuple operations</li>
+              <li>• Write most_frequent_letters to print letters in decreasing frequency order</li>
+              <li>• Find all anagram groups using sorted letters as dictionary keys</li>
+              <li>• Create word_distance to count differences between same-length words</li>
+              <li>• Find metathesis pairs (words differing by two swapped letters)</li>
+              <li>• Use zip, enumerate, and tuple assignment to solve word puzzles</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 11!
+
+# Example: Creating tuples
+t = 'l', 'u', 'p', 'i', 'n'
+print('Tuple:', t)
+print('Type:', type(t))
+
+# With parentheses
+t = ('l', 'u', 'p', 'i', 'n')
+print('With parens:', t)
+
+# Single element tuple needs comma
+t1 = 'p',
+print('Single element:', t1, type(t1))
+
+# Example: Tuple operations
+t = ('l', 'u', 'p', 'i', 'n')
+print('Index [0]:', t[0])
+print('Slice [1:3]:', t[1:3])
+print('Concatenate:', ('a', 'b') + ('c', 'd'))
+
+# Example: Tuple assignment
+a, b = 1, 2
+print('a =', a, ', b =', b)
+
+# Swap values
+a, b = b, a
+print('After swap: a =', a, ', b =', b)
+
+# Example: Tuples as return values
+def min_max(lst):
+    return min(lst), max(lst)
+
+low, high = min_max([2, 4, 1, 3])
+print('Min:', low, ', Max:', high)
+
+# Example: Using zip
+scores1 = [1, 2, 4]
+scores2 = [5, 5, 2]
+
+for s1, s2 in zip(scores1, scores2):
+    print(f'Game: {s1} vs {s2}')
+
+# Example: Dictionary with tuple keys
+d = {}
+d[1, 2] = 'first'
+d[3, 4] = 'second'
+print('Dict with tuple keys:', d)
+print('Lookup (1, 2):', d[1, 2])"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

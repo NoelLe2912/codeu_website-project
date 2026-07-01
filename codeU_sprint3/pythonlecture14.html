@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 14: Classes and Functions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 14: Classes and Functions
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Introduction to Object-Oriented Programming
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Classes</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Objects</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Attributes</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Programmer-Defined Types -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Programmer-Defined Types</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python provides built-in types like int, str, and list. Now we'll create our own custom types using classes. A class is like a blueprint for creating objects.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Defining a Class</h3>
+            <p class="text-gray-700 mb-4">
+              Create a new type to represent a time of day:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents a time of day."""
+
+# The class is like a factory
+type(Time)
+# type
+
+# Creating an instance
+lunch = Time()
+type(lunch)
+# __main__.Time</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Key Concepts</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Class:</span> A programmer-defined type (the blueprint)</p>
+              <p><span class="font-bold text-blue-600">Class object:</span> The result of a class definition</p>
+              <p><span class="font-bold text-blue-600">Instance:</span> An object created from a class</p>
+              <p><span class="font-bold text-blue-600">Instantiation:</span> The process of creating an instance</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Think of it:</span> A class is like a cookie cutter, and instances are the cookies you make with it!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Attributes -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Attributes: Object Variables</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Attributes are variables that belong to an object. They store the object's data and define its state. Use dot notation to create and access attributes.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Attributes</h3>
+            <p class="text-gray-700 mb-4">
+              Add data to an object using the dot operator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>lunch = Time()
+
+# Create attributes
+lunch.hour = 11
+lunch.minute = 59
+lunch.second = 1
+
+# Access attributes
+lunch.hour
+# 11
+
+# Use in expressions
+total_minutes = lunch.hour * 60 + lunch.minute
+total_minutes
+# 719</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Formatting with F-Strings</h3>
+            <p class="text-gray-700 mb-4">
+              Display time with proper formatting using format specifiers:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Without formatting
+f'{lunch.hour}:{lunch.minute}:{lunch.second}'
+# '11:59:1'  (wrong!)
+
+# With format specifiers (02d = 2 digits, leading zero)
+f'{lunch.hour:02d}:{lunch.minute:02d}:{lunch.second:02d}'
+# '11:59:01'  (correct!)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Functions with Objects</h3>
+            <p class="text-gray-700 mb-4">
+              Pass objects as function arguments:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def print_time(time):
+    s = f'{time.hour:02d}:{time.minute:02d}:{time.second:02d}'
+    print(s)
+
+print_time(lunch)
+# 11:59:01</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">📝 Pronunciation:</span> AT-trib-ute (emphasis on first syllable), not a-TRIB-ute!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Objects as Return Values -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Objects as Return Values</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Functions can create and return objects, making it easy to build new instances with specific values.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Factory Function Pattern</h3>
+            <p class="text-gray-700 mb-4">
+              Create a function that builds and returns objects:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def make_time(hour, minute, second):
+    time = Time()
+    time.hour = hour
+    time.minute = minute
+    time.second = second
+    return time
+
+# Use it to create objects
+time = make_time(11, 59, 1)
+print_time(time)
+# 11:59:01</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why This Pattern?</h3>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Cleaner than creating objects manually</p>
+              <p>• Ensures all attributes are initialized</p>
+              <p>• Parameters can have the same names as attributes (common pattern)</p>
+              <p>• Makes code more readable and maintainable</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🏭 Factory Pattern:</span> This is like a factory that builds objects to your specifications!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Objects Are Mutable -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Objects Are Mutable</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Unlike strings and tuples, objects created from custom classes are mutable—you can change their attributes after creation. This power requires care!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Modifying Objects</h3>
+            <p class="text-gray-700 mb-4">
+              Change attributes directly:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>start = make_time(9, 20, 0)
+print_time(start)
+# 09:20:00
+
+# Modify the object
+start.hour += 1
+start.minute += 32
+
+print_time(start)
+# 10:52:00</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Impure Functions</h3>
+            <p class="text-gray-700 mb-4">
+              Functions that modify their parameters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def increment_time(time, hours, minutes, seconds):
+    time.hour += hours
+    time.minute += minutes
+    time.second += seconds
+
+start = make_time(9, 20, 0)
+increment_time(start, 1, 32, 0)
+print_time(start)
+# 10:52:00  (start was modified!)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Aliasing Problem</h3>
+            <p class="text-gray-700 mb-4">
+              Inside the function, the parameter is an alias for the argument:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• <code>time</code> and <code>start</code> refer to the same object</p>
+              <p>• Changes to <code>time</code> affect <code>start</code></p>
+              <p>• The variable name <code>start</code> becomes misleading (it's now the end time!)</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Side Effects:</span> Functions that modify objects create side effects that can be confusing. Use with care!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Copying Objects -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Copying Objects</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            To avoid unwanted modifications, we can copy objects. The copy module provides a function that duplicates any object.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Making Copies</h3>
+            <p class="text-gray-700 mb-4">
+              Create independent duplicates:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>from copy import copy
+
+start = make_time(9, 20, 0)
+end = copy(start)
+
+# Same data
+print_time(start)
+print_time(end)
+# 09:20:00
+# 09:20:00
+
+# But different objects
+start is end
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The == Operator Surprise</h3>
+            <p class="text-gray-700 mb-4">
+              For custom classes, == checks identity by default:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>start == end
+# False (even though they have the same data!)
+
+# For custom classes:
+# == behaves like 'is' (checks identity)
+# Not like built-in types (which check equivalence)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">💡 Remember:</span> Copying creates a new object with the same data. Changes to the copy don't affect the original!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Pure Functions -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Pure Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Pure functions don't modify their parameters—they create and return new objects instead. This makes code easier to understand and debug.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Pure Function Example</h3>
+            <p class="text-gray-700 mb-4">
+              Use copy to avoid modifying the original:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def add_time(time, hours, minutes, seconds):
+    total = copy(time)
+    increment_time(total, hours, minutes, seconds)
+    return total
+
+start = make_time(9, 20, 0)
+end = add_time(start, 1, 32, 0)
+
+print_time(end)
+# 10:52:00
+
+print_time(start)
+# 09:20:00  (unchanged!)</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">Impure Functions</h4>
+              <div class="space-y-2 text-gray-700">
+                <p>• Modify parameters</p>
+                <p>• Have side effects</p>
+                <p>• Can be more efficient</p>
+                <p>• Harder to debug</p>
+                <p>• Can cause confusion</p>
+              </div>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">Pure Functions</h4>
+              <div class="space-y-2 text-gray-700">
+                <p>• Don't modify parameters</p>
+                <p>• No side effects</p>
+                <p>• Easier to understand</p>
+                <p>• Easier to test</p>
+                <p>• More predictable</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📚 Functional Style:</span> Write pure functions when reasonable. Use impure functions only when there's a compelling advantage.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Prototype and Patch -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Prototype and Patch Development</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Start with a simple version that works for easy cases, then fix bugs as you discover them. This is effective but can lead to complicated code.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Problem</h3>
+            <p class="text-gray-700 mb-4">
+              Our increment_time function breaks with certain inputs:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>start = make_time(9, 40, 0)
+end = add_time(start, 1, 32, 0)
+print_time(end)
+# 10:72:00  (Invalid! Minutes can't be 72!)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Patch: Handle Overflow</h3>
+            <p class="text-gray-700 mb-4">
+              Fix it by checking for values >= 60:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def increment_time(time, hours, minutes, seconds):
+    time.hour += hours
+    time.minute += minutes
+    time.second += seconds
+
+    if time.second >= 60:
+        time.second -= 60
+        time.minute += 1
+
+    if time.minute >= 60:
+        time.minute -= 60
+        time.hour += 1</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Better Patch: Use divmod</h3>
+            <p class="text-gray-700 mb-4">
+              Handle any size increment:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def increment_time(time, hours, minutes, seconds):
+    time.hour += hours
+    time.minute += minutes
+    time.second += seconds
+    
+    carry, time.second = divmod(time.second, 60)
+    carry, time.minute = divmod(time.minute + carry, 60)
+    carry, time.hour = divmod(time.hour + carry, 24)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">⚠️ Limitation:</span> Prototype and patch works but can create messy code with many special cases. Better to plan ahead!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Design-First Development -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Design-First Development</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Think deeply about the problem before coding. A good insight can make everything simpler and more elegant.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Key Insight</h3>
+            <p class="text-gray-700 mb-4">
+              Time is like a three-digit number in base 60:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• <span class="font-bold">Second:</span> "ones column" (0-59)</p>
+              <p>• <span class="font-bold">Minute:</span> "sixties column" (0-59)</p>
+              <p>• <span class="font-bold">Hour:</span> "thirty-six hundreds column" (0-23)</p>
+              <p>• <span class="font-bold">Solution:</span> Convert to integers, use arithmetic, convert back!</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Conversion Functions</h3>
+            <p class="text-gray-700 mb-4">
+              Convert between Time objects and integers:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def time_to_int(time):
+    minutes = time.hour * 60 + time.minute
+    seconds = minutes * 60 + time.second
+    return seconds
+
+def int_to_time(seconds):
+    minute, second = divmod(seconds, 60)
+    hour, minute = divmod(minute, 60)
+    return make_time(hour, minute, second)
+
+# Test it
+time = make_time(1, 1, 1)
+time_to_int(time)
+# 3661 seconds since midnight</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Elegant add_time</h3>
+            <p class="text-gray-700 mb-4">
+              Much simpler with conversions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def add_time(time, hours, minutes, seconds):
+    duration = make_time(hours, minutes, seconds)
+    seconds = time_to_int(time) + time_to_int(duration)
+    return int_to_time(seconds)
+
+start = make_time(9, 40, 0)
+end = add_time(start, 1, 32, 0)
+print_time(end)
+# 11:12:00  (Works perfectly!)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">✨ Paradox:</span> Sometimes making a problem more general (or harder) makes the solution easier! Fewer special cases = fewer bugs.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging with Objects</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python provides built-in functions for inspecting objects and their attributes.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Inspection Functions</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Check object type
+type(start)
+# __main__.Time
+
+# Check if instance of a class
+isinstance(start, Time)
+# True
+
+# Check if attribute exists
+hasattr(start, 'hour')
+# True
+
+# Get all attributes as dictionary
+vars(start)
+# {'hour': 9, 'minute': 20, 'second': 0}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">🔍 Pro Tip:</span> Use vars() to quickly see all attributes and their values when debugging!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master object-oriented programming!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write subtract_time to find the interval between two times in seconds</li>
+              <li>• Create is_after to check if one time comes after another</li>
+              <li>• Define a Date class with year, month, and day attributes</li>
+              <li>• Write make_date, print_date, and is_after for Date objects</li>
+              <li>• Create a Point class representing (x, y) coordinates</li>
+              <li>• Write functions to calculate distance between points</li>
+              <li>• Experiment with pure vs impure function styles</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the object-oriented programming examples!
+
+# Define a Time class
+class Time:
+    \"\"\"Represents a time of day.\"\"\"
+
+# Factory function to create Time objects
+def make_time(hour, minute, second):
+    time = Time()
+    time.hour = hour
+    time.minute = minute
+    time.second = second
+    return time
+
+# Function to display time
+def print_time(time):
+    s = f'{time.hour:02d}:{time.minute:02d}:{time.second:02d}'
+    print(s)
+
+# Create a Time object
+lunch = make_time(11, 59, 1)
+print('Lunch time:', end=' ')
+print_time(lunch)
+
+# Access attributes
+print(f'Total minutes: {lunch.hour * 60 + lunch.minute}')
+
+# Conversion functions
+def time_to_int(time):
+    minutes = time.hour * 60 + time.minute
+    seconds = minutes * 60 + time.second
+    return seconds
+
+def int_to_time(seconds):
+    minute, second = divmod(seconds, 60)
+    hour, minute = divmod(minute, 60)
+    return make_time(hour, minute, second)
+
+# Test conversions
+print(f'\nSeconds since midnight: {time_to_int(lunch)}')
+
+# Pure function to add time
+def add_time(time, hours, minutes, seconds):
+    duration = make_time(hours, minutes, seconds)
+    total_seconds = time_to_int(time) + time_to_int(duration)
+    return int_to_time(total_seconds)
+
+start = make_time(9, 40, 0)
+print('\nMovie starts at:', end=' ')
+print_time(start)
+
+end = add_time(start, 1, 32, 0)
+print('Movie ends at:', end=' ')
+print_time(end)
+
+# Check that start is unchanged
+print('Start unchanged:', end=' ')
+print_time(start)
+
+# Use vars to inspect
+print(f'\nAttributes: {vars(lunch)}')"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

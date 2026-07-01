@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 15: Classes and Methods</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 15: Classes and Methods
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Idiomatic Object-Oriented Programming in Python
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Methods</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Special Methods</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Operator Overloading</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Defining Methods -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Defining Methods</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Methods are functions defined inside a class. They make the connection between code and data explicit, creating more organized and intuitive programs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">From Function to Method</h3>
+            <p class="text-gray-700 mb-4">
+              Move the function inside the class and change the parameter name to self:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Before: External function
+def print_time(time):
+    s = f'{time.hour:02d}:{time.minute:02d}:{time.second:02d}'
+    print(s)
+
+# After: Method inside class
+class Time:
+    """Represents the time of day."""
+    
+    def print_time(self):
+        s = f'{self.hour:02d}:{self.minute:02d}:{self.second:02d}'
+        print(s)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Two Ways to Call Methods</h3>
+            <p class="text-gray-700 mb-4">
+              Function syntax vs. method syntax:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>start = Time()
+start.hour = 9
+start.minute = 40
+start.second = 0
+
+# Function syntax (uncommon)
+Time.print_time(start)
+# 09:40:00
+
+# Method syntax (idiomatic!)
+start.print_time()
+# 09:40:00</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Receiver</h3>
+            <p class="text-gray-700 mb-4">
+              The object a method is invoked on is called the receiver:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• In <code>start.print_time()</code>, <code>start</code> is the receiver</p>
+              <p>• Inside the method, <code>self</code> refers to the receiver</p>
+              <p>• Think of it as "sending a message" to an object</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📌 Convention:</span> Always name the first parameter of a method <code>self</code>. It's not required, but it's universal Python style!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Converting More Functions -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Converting Functions to Methods</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Let's convert more functions to methods. The pattern is simple: move inside the class, change the parameter name to self, and adjust attribute references.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: time_to_int</h3>
+            <p class="text-gray-700 mb-4">
+              Convert time values to seconds:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents the time of day."""
+    
+    def time_to_int(self):
+        minutes = self.hour * 60 + self.minute
+        seconds = minutes * 60 + self.second
+        return seconds
+
+start = Time()
+start.hour = 9
+start.minute = 40
+start.second = 0
+
+start.time_to_int()
+# 34800 (seconds since midnight)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method vs Function Terminology</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-blue-800 mb-2">Functions</p>
+                <p class="text-sm text-gray-700">We <span class="font-bold">call</span> them</p>
+                <p class="text-xs text-gray-600 mt-2">print_time(start)</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Methods</p>
+                <p class="text-sm text-gray-700">We <span class="font-bold">invoke</span> them</p>
+                <p class="text-xs text-gray-600 mt-2">start.print_time()</p>
+              </div>
+            </div>
+            <p class="text-gray-700 mt-4 text-sm">Note: "Call" and "invoke" mean the same thing—just different terminology!</p>
+          </div>
+        </section>
+
+        <!-- Section 3: Static Methods -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Static Methods</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Some methods don't need an instance to work. Static methods are invoked on the class itself, not on objects. They're perfect for factory functions!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Chicken-and-Egg Problem</h3>
+            <p class="text-gray-700 mb-4">
+              How do we create a Time object using a method if we need a Time object to call the method?
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents the time of day."""
+    
+    @staticmethod
+    def int_to_time(seconds):
+        minute, second = divmod(seconds, 60)
+        hour, minute = divmod(minute, 60)
+        time = Time()
+        time.hour = hour
+        time.minute = minute
+        time.second = second
+        return time
+
+# Call on the class, not an instance!
+start = Time.int_to_time(34800)
+print(f'{start.hour}:{start.minute}:{start.second}')
+# 9:40:0</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Static vs Instance Methods</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-red-800 mb-2">Instance Method</p>
+                <p class="text-sm text-gray-700 mb-2">• Has <code>self</code> parameter</p>
+                <p class="text-sm text-gray-700 mb-2">• Invoked on objects</p>
+                <p class="text-xs text-gray-600 mt-2">obj.method()</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Static Method</p>
+                <p class="text-sm text-gray-700 mb-2">• No <code>self</code> parameter</p>
+                <p class="text-sm text-gray-700 mb-2">• Invoked on class</p>
+                <p class="text-xs text-gray-600 mt-2">Class.method()</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🏭 Use Case:</span> Static methods are perfect for factory functions that create and return new instances!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Comparing Objects -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Comparing Time Objects</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Methods that compare objects use self for the first object and another parameter (often called other) for the second.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The is_after Method</h3>
+            <p class="text-gray-700 mb-4">
+              Check if one time comes after another:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents the time of day."""
+    
+    def is_after(self, other):
+        return self.time_to_int() > other.time_to_int()
+
+start = Time()
+start.hour = 9
+start.minute = 40
+start.second = 0
+
+end = Time()
+end.hour = 11
+end.minute = 12
+end.second = 0
+
+end.is_after(start)
+# True
+
+# Reads like English: "end is after start?"</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Elegant Syntax</h3>
+            <p class="text-gray-700 mb-4">
+              Method syntax makes comparisons read naturally:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• <code>end.is_after(start)</code> reads like "end is after start?"</p>
+              <p>• Much clearer than <code>is_after(end, start)</code></p>
+              <p>• Object-oriented code can be more intuitive!</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: The __str__ Method -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Special Methods: __str__</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Special methods have names surrounded by double underscores. They give objects custom behavior with Python's built-in functions and operators.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Converting Objects to Strings</h3>
+            <p class="text-gray-700 mb-4">
+              Python calls __str__ when converting objects to strings:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents the time of day."""
+    
+    def __str__(self):
+        s = f'{self.hour:02d}:{self.minute:02d}:{self.second:02d}'
+        return s
+
+end = Time()
+end.hour = 11
+end.minute = 12
+end.second = 0
+
+# Direct call
+end.__str__()
+# '11:12:00'
+
+# Python calls it automatically
+str(end)
+# '11:12:00'
+
+# Print calls str() automatically
+print(end)
+# 11:12:00</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">When __str__ is Called</h3>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• When you call <code>str(object)</code></p>
+              <p>• When you <code>print(object)</code></p>
+              <p>• When using objects in f-strings</p>
+              <p>• Anywhere Python needs a string representation</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">✨ Magic:</span> Special methods let your objects work seamlessly with Python's built-in features!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: The __init__ Method -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">The __init__ Method</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The most important special method! __init__ initializes new objects automatically when they're created.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Automatic Initialization</h3>
+            <p class="text-gray-700 mb-4">
+              Set attributes when creating objects:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    """Represents the time of day."""
+    
+    def __init__(self, hour=0, minute=0, second=0):
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+    
+    def __str__(self):
+        return f'{self.hour:02d}:{self.minute:02d}:{self.second:02d}'
+
+# Create and initialize in one step!
+time = Time(9, 40, 0)
+print(time)
+# 09:40:00</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Optional Parameters</h3>
+            <p class="text-gray-700 mb-4">
+              Default values make parameters optional:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># No arguments - all defaults
+time = Time()
+print(time)
+# 00:00:00
+
+# One argument - overrides hour
+time = Time(9)
+print(time)
+# 09:00:00
+
+# Two arguments - overrides hour and minute
+time = Time(9, 45)
+print(time)
+# 09:45:00
+
+# Three arguments - overrides all
+time = Time(9, 45, 30)
+print(time)
+# 09:45:30</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🎯 Best Practice:</span> Always write __init__ and __str__ first when creating a new class. They make objects easier to create and debug!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Operator Overloading -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Operator Overloading</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Define special methods to make operators like + work with your custom types. This makes code more intuitive and Pythonic!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The __add__ Method</h3>
+            <p class="text-gray-700 mb-4">
+              Make the + operator work with Time objects:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    def __add__(self, other):
+        seconds = self.time_to_int() + other.time_to_int()
+        return Time.int_to_time(seconds)
+
+start = Time(9, 40)
+duration = Time(1, 32)
+
+# Use + operator!
+end = start + duration
+print(end)
+# 11:12:00</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What Happens Behind the Scenes</h3>
+            <p class="text-gray-700 mb-4">
+              When you write <code>start + duration</code>:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>1. Python calls <code>start.__add__(duration)</code></p>
+              <p>2. __add__ converts both times to seconds</p>
+              <p>3. Adds the seconds together</p>
+              <p>4. Converts back to a Time object</p>
+              <p>5. Returns the new Time</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common Special Methods</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-blue-800 mb-2">Arithmetic</p>
+                <p class="text-sm text-gray-700">__add__ (+)</p>
+                <p class="text-sm text-gray-700">__sub__ (-)</p>
+                <p class="text-sm text-gray-700">__mul__ (*)</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Comparison</p>
+                <p class="text-sm text-gray-700">__eq__ (==)</p>
+                <p class="text-sm text-gray-700">__lt__ (<)</p>
+                <p class="text-sm text-gray-700">__gt__ (>)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🎭 Operator Overloading:</span> Changing operator behavior for custom types makes your objects feel like built-in Python types!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Debugging with Invariants -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging: Invariants</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Invariants are conditions that should always be true. Writing methods to check invariants helps catch bugs early!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Time Invariants</h3>
+            <p class="text-gray-700 mb-4">
+              What makes a valid Time object?
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Hour must be non-negative integer</p>
+              <p>• Minute must be 0-59 (integer)</p>
+              <p>• Second must be 0-59 (can have fractions)</p>
+              <p>• These conditions should ALWAYS be true</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Validation Method</h3>
+            <p class="text-gray-700 mb-4">
+              Check if a Time object is valid:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Time:
+    def is_valid(self):
+        if self.hour < 0 or self.minute < 0 or self.second < 0:
+            return False
+        if self.minute >= 60 or self.second >= 60:
+            return False
+        if not isinstance(self.hour, int):
+            return False
+        if not isinstance(self.minute, int):
+            return False
+        return True
+
+time = Time(25, 70, -5)
+time.is_valid()
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using Assertions</h3>
+            <p class="text-gray-700 mb-4">
+              Add checks at the start of methods:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def is_after(self, other):
+    assert self.is_valid(), 'self is not valid'
+    assert other.is_valid(), 'other is not valid'
+    return self.time_to_int() > other.time_to_int()
+
+# Invalid time
+bad_time = Time(0, 132, 0)
+good_time = Time(9, 40, 0)
+
+good_time.is_after(bad_time)
+# AssertionError: other is not valid</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🔍 Debugging Tip:</span> Assertions help distinguish normal code from error-checking code. They fail fast when something goes wrong!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master methods and object-oriented programming!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Convert functions from Chapter 14 to methods</li>
+              <li>• Create a Date class with __init__ and __str__ methods</li>
+              <li>• Write is_after method for Date objects using to_tuple helper</li>
+              <li>• Add __add__ and __sub__ methods to Date class</li>
+              <li>• Implement __eq__ and __lt__ for comparisons</li>
+              <li>• Write is_valid methods for your custom classes</li>
+              <li>• Practice using assert statements for validation</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the object-oriented programming with methods!
+
+# Complete Time class with methods
+class Time:
+    \"\"\"Represents the time of day.\"\"\"
+    
+    def __init__(self, hour=0, minute=0, second=0):
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+    
+    def __str__(self):
+        return f'{self.hour:02d}:{self.minute:02d}:{self.second:02d}'
+    
+    def time_to_int(self):
+        minutes = self.hour * 60 + self.minute
+        seconds = minutes * 60 + self.second
+        return seconds
+    
+    @staticmethod
+    def int_to_time(seconds):
+        minute, second = divmod(seconds, 60)
+        hour, minute = divmod(minute, 60)
+        return Time(hour, minute, second)
+    
+    def __add__(self, other):
+        seconds = self.time_to_int() + other.time_to_int()
+        return Time.int_to_time(seconds)
+    
+    def is_after(self, other):
+        return self.time_to_int() > other.time_to_int()
+
+# Create times using __init__
+start = Time(9, 40, 0)
+print('Start:', start)
+
+# Use __add__ with + operator
+duration = Time(1, 32, 0)
+end = start + duration
+print('End:', end)
+
+# Use is_after method
+print(f'End is after start? {end.is_after(start)}')
+
+# Static method
+midnight = Time.int_to_time(0)
+print('Midnight:', midnight)
+
+noon = Time.int_to_time(43200)
+print('Noon:', noon)
+
+# Method chaining
+result = Time(10, 0, 0) + Time(0, 30, 0)
+print('10:00 + 0:30 =', result)"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopReze() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

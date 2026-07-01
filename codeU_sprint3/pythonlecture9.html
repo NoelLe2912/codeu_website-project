@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 9: Lists</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 9: Lists
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Working with Collections of Values
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Mutable Sequences</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">List Methods</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">References</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Lists as Sequences -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Lists Are Sequences</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Like strings, lists are sequences of values. But unlike strings, where values must be characters, lists can contain any type of value—numbers, strings, or even other lists!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Lists</h3>
+            <p class="text-gray-700 mb-4">
+              Use square brackets to create a list with elements:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># List of integers
+numbers = [42, 123]
+
+# List of strings
+cheeses = ['Cheddar', 'Edam', 'Gouda']
+
+# Mixed types
+t = ['spam', 2.0, 5, [10, 20]]
+
+# Empty list
+empty = []</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">List Properties</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Elements can be any type—and can be mixed</p>
+              <p>• Lists can contain other lists (nested lists)</p>
+              <p>• Use len() to get the number of elements</p>
+              <p>• Empty lists have length 0</p>
+            </div>
+            <div class="bg-gray-900 rounded-lg p-4 mt-4">
+              <pre class="text-green-400 font-mono text-sm"><code>len(cheeses)
+# 3
+
+len(empty)
+# 0
+
+len(t)
+# 4 (nested list counts as one element)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Nested Lists</h3>
+            <p class="text-gray-700 mb-4">
+              A list within another list is called a nested list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = ['spam', 2.0, 5, [10, 20]]
+
+# The nested list is a single element
+len(t)
+# 4
+
+# 10 is inside the nested list, not in t
+10 in t
+# False
+
+# But the nested list itself is in t
+[10, 20] in t
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Difference:</span> Strings can only contain characters. Lists can contain anything—including other lists!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Lists Are Mutable -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Lists Are Mutable</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Unlike strings (which are immutable), lists are mutable—you can change their elements. This is one of the most important differences between lists and strings.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Accessing Elements</h3>
+            <p class="text-gray-700 mb-4">
+              Use the bracket operator to read elements (just like strings):
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>cheeses = ['Cheddar', 'Edam', 'Gouda']
+
+# First element (index 0)
+cheeses[0]
+# 'Cheddar'
+
+# Last element (negative index)
+cheeses[-1]
+# 'Gouda'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Modifying Elements</h3>
+            <p class="text-gray-700 mb-4">
+              Use the bracket operator on the left side to change elements:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>numbers = [42, 123]
+
+# Change the second element
+numbers[1] = 17
+
+numbers
+# [42, 17]</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">Strings: Immutable</h4>
+              <div class="bg-gray-900 rounded p-3">
+                <pre class="text-red-400 text-sm"><code>s = 'hello'
+s[0] = 'H'
+# TypeError!</code></pre>
+              </div>
+              <p class="text-sm text-gray-700 mt-2">Cannot change characters</p>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">Lists: Mutable</h4>
+              <div class="bg-gray-900 rounded p-3">
+                <pre class="text-green-400 text-sm"><code>lst = ['h', 'e', 'l', 'l', 'o']
+lst[0] = 'H'
+# Works!</code></pre>
+              </div>
+              <p class="text-sm text-gray-700 mt-2">Can change elements freely</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The in Operator</h3>
+            <p class="text-gray-700 mb-4">
+              Check if an element exists in a list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>cheeses = ['Cheddar', 'Edam', 'Gouda']
+
+'Edam' in cheeses
+# True
+
+'Wensleydale' in cheeses
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">🔑 Critical Concept:</span> Mutability means you can modify lists in place. This has important implications for how lists behave when passed to functions or assigned to multiple variables!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: List Slices -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Slicing Lists</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The slice operator works exactly the same way for lists as it does for strings. You can extract portions of a list or create copies.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Slicing</h3>
+            <p class="text-gray-700 mb-4">
+              Use [n:m] to get elements from index n up to (but not including) m:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>letters = ['a', 'b', 'c', 'd']
+
+# Get second and third elements
+letters[1:3]
+# ['b', 'c']
+
+# From beginning to index 2
+letters[:2]
+# ['a', 'b']
+
+# From index 2 to end
+letters[2:]
+# ['c', 'd']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Copying Lists</h3>
+            <p class="text-gray-700 mb-4">
+              Two ways to create a copy of a list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>letters = ['a', 'b', 'c', 'd']
+
+# Method 1: Full slice
+copy1 = letters[:]
+
+# Method 2: list() function
+copy2 = list(letters)
+
+copy1
+# ['a', 'b', 'c', 'd']
+
+copy2
+# ['a', 'b', 'c', 'd']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Note:</span> Avoid using "list" as a variable name—it's the name of a built-in function. If you assign to it, you'll lose access to the function!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: List Operations -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">List Operations</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Lists support several operators and built-in functions that make working with them convenient and powerful.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Concatenation and Repetition</h3>
+            <p class="text-gray-700 mb-4">
+              Use + to join lists and * to repeat them:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t1 = [1, 2]
+t2 = [3, 4]
+
+# Concatenate with +
+t1 + t2
+# [1, 2, 3, 4]
+
+# Repeat with *
+['spam'] * 4
+# ['spam', 'spam', 'spam', 'spam']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Built-in Functions</h3>
+            <p class="text-gray-700 mb-4">
+              Python provides useful functions for working with lists of numbers:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>numbers = [1, 5, 3, 9, 2]
+
+# Sum all elements
+sum(numbers)
+# 20
+
+# Find minimum
+min(numbers)
+# 1
+
+# Find maximum
+max(numbers)
+# 9</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">💡 Limitation:</span> Most mathematical operators (-, /, etc.) don't work with lists. Use sum(), min(), and max() for common calculations.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: List Methods -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Powerful List Methods</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Lists come with many built-in methods that modify the list in place. Understanding these methods is crucial for effective list manipulation.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Adding Elements</h3>
+            <p class="text-gray-700 mb-4">
+              Use append to add one element, or extend to add multiple:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>letters = ['a', 'b', 'c', 'd']
+
+# Add single element
+letters.append('e')
+letters
+# ['a', 'b', 'c', 'd', 'e']
+
+# Add multiple elements
+letters.extend(['f', 'g'])
+letters
+# ['a', 'b', 'c', 'd', 'e', 'f', 'g']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Removing Elements</h3>
+            <p class="text-gray-700 mb-4">
+              Two ways to remove elements: by index (pop) or by value (remove):
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = ['a', 'b', 'c']
+
+# Remove by index (returns the element)
+t.pop(1)
+# 'b'
+
+t
+# ['a', 'c']
+
+# Remove by value (returns None)
+t = ['a', 'b', 'c']
+t.remove('b')
+# None (no return value shown)
+
+t
+# ['a', 'c']</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-purple-50 rounded-lg p-6">
+              <h4 class="font-bold text-purple-800 mb-3 text-xl">pop(index)</h4>
+              <p class="text-gray-700 mb-3">• Removes element at index</p>
+              <p class="text-gray-700 mb-3">• Returns the removed element</p>
+              <p class="text-gray-700">• Use when you know position</p>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">remove(value)</h4>
+              <p class="text-gray-700 mb-3">• Removes first matching element</p>
+              <p class="text-gray-700 mb-3">• Returns None</p>
+              <p class="text-gray-700">• Use when you know value</p>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Error: Element Not Found</h3>
+            <p class="text-gray-700 mb-4">
+              Trying to remove a non-existent element causes a ValueError:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>t = ['a', 'b', 'c']
+t.remove('d')
+# ValueError: list.remove(x): x not in list</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Lists and Strings -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Converting Between Lists and Strings</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Lists and strings are closely related. Python provides powerful methods to convert between them—essential for text processing.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">String to List of Characters</h3>
+            <p class="text-gray-700 mb-4">
+              Use list() to break a string into individual characters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>s = 'spam'
+t = list(s)
+t
+# ['s', 'p', 'a', 'm']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">String to List of Words</h3>
+            <p class="text-gray-700 mb-4">
+              Use split() to break a string into words:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>s = 'pining for the fjords'
+t = s.split()
+t
+# ['pining', 'for', 'the', 'fjords']
+
+# Split with custom delimiter
+s = 'ex-parrot'
+t = s.split('-')
+t
+# ['ex', 'parrot']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">List to String</h3>
+            <p class="text-gray-700 mb-4">
+              Use join() to combine list elements into a string:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>t = ['pining', 'for', 'the', 'fjords']
+
+# Join with spaces
+delimiter = ' '
+s = delimiter.join(t)
+s
+# 'pining for the fjords'
+
+# Join with no spaces
+''.join(t)
+# 'piningforthefjords'
+
+# Join with custom delimiter
+'-'.join(t)
+# 'pining-for-the-fjords'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🔤 Important:</span> join() is a string method, not a list method! Call it on the delimiter string and pass the list as an argument.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Looping Through Lists -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Looping Through Lists</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            For loops work beautifully with lists, allowing you to process each element in sequence. This is one of the most common patterns in Python programming.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic List Loop</h3>
+            <p class="text-gray-700 mb-4">
+              Loop through each element in a list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>cheeses = ['Cheddar', 'Edam', 'Gouda']
+
+for cheese in cheeses:
+    print(cheese)
+
+# Output:
+# Cheddar
+# Edam
+# Gouda</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Combining split() and for</h3>
+            <p class="text-gray-700 mb-4">
+              Process words from a sentence:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>s = 'pining for the fjords'
+
+for word in s.split():
+    print(word)
+
+# Output:
+# pining
+# for
+# the
+# fjords</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Empty List Behavior</h3>
+            <p class="text-gray-700 mb-4">
+              A for loop over an empty list doesn't execute:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for x in []:
+    print('This never happens.')
+
+# No output - loop body never runs</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Pattern:</span> Use for loops to process each element of a list one at a time. This is cleaner and more readable than using indices!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Sorting Lists -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Sorting Lists</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python's sorted() function makes it easy to arrange list elements in order. It works with numbers, strings, and more.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Sorting Without Modifying</h3>
+            <p class="text-gray-700 mb-4">
+              sorted() returns a new sorted list, leaving the original unchanged:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>scramble = ['c', 'a', 'b']
+
+# Get sorted version
+sorted(scramble)
+# ['a', 'b', 'c']
+
+# Original is unchanged
+scramble
+# ['c', 'a', 'b']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Sorting Strings</h3>
+            <p class="text-gray-700 mb-4">
+              sorted() works on any sequence, including strings:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Sort letters in a word
+sorted('letters')
+# ['e', 'e', 'l', 'r', 's', 't', 't']
+
+# Convert back to string with join
+''.join(sorted('letters'))
+# 'eelrstt'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎯 Use Case:</span> Sorting letters is useful for finding anagrams—two words are anagrams if their sorted letters are identical!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Objects and Values -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Objects and Values</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Understanding the difference between objects and values is crucial for working with lists. Two variables can refer to the same object or to different objects with the same value.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Same Object vs Same Value</h3>
+            <p class="text-gray-700 mb-4">
+              Check if variables refer to the same object with the is operator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Strings: Python optimizes by reusing objects
+a = 'banana'
+b = 'banana'
+a is b
+# True (same object!)
+
+# Lists: Each assignment creates a new object
+a = [1, 2, 3]
+b = [1, 2, 3]
+a is b
+# False (different objects)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Equivalent vs Identical</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Equivalent:</span> Objects have the same value (use ==)</p>
+              <p><span class="font-bold text-blue-600">Identical:</span> Variables refer to the same object (use is)</p>
+            </div>
+            <div class="bg-gray-900 rounded-lg p-4 mt-4">
+              <pre class="text-green-400 font-mono text-sm"><code>a = [1, 2, 3]
+b = [1, 2, 3]
+
+# Equivalent (same values)
+a == b
+# True
+
+# Not identical (different objects)
+a is b
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📊 Remember:</span> If two objects are identical, they are also equivalent. But if they are equivalent, they are not necessarily identical!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 10: Aliasing -->
+        <section class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Aliasing and References</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When multiple variables refer to the same object, they are aliases. Changes made through one alias affect all others—this can cause surprising behavior if you're not careful!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Aliases</h3>
+            <p class="text-gray-700 mb-4">
+              When you assign one variable to another, both refer to the same object:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>a = [1, 2, 3]
+b = a
+
+# They are identical (same object)
+b is a
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Aliasing Effects</h3>
+            <p class="text-gray-700 mb-4">
+              Changes through one alias affect the other:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>a = [1, 2, 3]
+b = a
+
+# Modify through b
+b[0] = 5
+
+# a "sees" the change!
+a
+# [5, 2, 3]</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Avoiding Aliasing Problems</h3>
+            <p class="text-gray-700 mb-4">
+              Create a copy if you want independent lists:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>a = [1, 2, 3]
+b = a[:]  # Create a copy
+
+# Now they're different objects
+b is a
+# False
+
+# Changes to b don't affect a
+b[0] = 5
+a
+# [1, 2, 3]</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Immutable Objects and Aliasing</h3>
+            <p class="text-gray-700 mb-4">
+              With immutable objects like strings, aliasing isn't a problem:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>a = 'banana'
+b = a
+
+# You can't change a string anyway
+# So it doesn't matter if they're the same object</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Danger Zone:</span> Aliasing with mutable objects is error-prone. When working with lists, be careful about creating copies versus creating references!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 11: List Arguments -->
+        <section class="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Lists as Function Arguments</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When you pass a list to a function, the function receives a reference to the original list—not a copy. This means functions can modify the caller's list!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Functions Modify Lists</h3>
+            <p class="text-gray-700 mb-4">
+              Changes made inside a function persist after the function returns:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def pop_first(lst):
+    return lst.pop(0)
+
+letters = ['a', 'b', 'c']
+
+# Call the function
+result = pop_first(letters)
+result
+# 'a'
+
+# The original list is modified!
+letters
+# ['b', 'c']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Understanding the Reference</h3>
+            <p class="text-gray-700 mb-4">
+              The parameter and the argument are aliases for the same list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Inside the function:
+# lst and letters refer to the same object
+# So modifications through lst affect letters</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-red-800">🚨 Important:</span> This is different from strings and numbers! When you pass a string or number to a function, the function can't change the caller's variable. But with lists, it can!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 12: Making a Word List -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Building a Word List</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Reading a file once and storing words in a list is much more efficient than reading the file multiple times. Here are two approaches.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method 1: Loop and Append</h3>
+            <p class="text-gray-700 mb-4">
+              Build the list one word at a time:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>word_list = []
+
+for line in open('words.txt'):
+    word = line.strip()
+    word_list.append(word)
+
+len(word_list)
+# 113783</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method 2: Read and Split</h3>
+            <p class="text-gray-700 mb-4">
+              Read the entire file and split it in one step:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Read entire file into a string
+string = open('words.txt').read()
+
+# Split into list of words
+word_list = string.split()
+
+len(word_list)
+# 113783</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using the Word List</h3>
+            <p class="text-gray-700 mb-4">
+              Now searching is fast with the in operator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>'demotic' in word_list
+# True
+
+'contrafibularities' in word_list
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">⚡ Efficiency:</span> Loading the word list once lets you search it many times without re-reading the file. Much faster!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 13: Debugging -->
+        <section class="bg-gradient-to-br from-gray-50 to-slate-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging List Code</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            List methods behave differently than string methods. Understanding these differences helps avoid common bugs.
+          </p>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common Mistake: Assigning Method Results</h3>
+            <p class="text-gray-700 mb-4">
+              Most list methods modify the list and return None:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code># WRONG! remove returns None
+t = [1, 2, 3]
+t = t.remove(3)
+
+# Now t is None
+print(t)
+# None
+
+# Next operation fails
+t.remove(2)
+# AttributeError: 'NoneType' object has no attribute 'remove'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Correct Pattern</h3>
+            <p class="text-gray-700 mb-4">
+              Don't assign the result—just call the method:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># CORRECT: Just call the method
+t = [1, 2, 3]
+t.remove(3)
+
+# t is still a list
+print(t)
+# [1, 2]</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl">String Methods</h4>
+              <p class="text-gray-700 mb-3">Return new string, original unchanged</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-blue-400 text-sm">s = s.strip()</code>
+              </div>
+            </div>
+
+            <div class="bg-purple-50 rounded-lg p-6">
+              <h4 class="font-bold text-purple-800 mb-3 text-xl">List Methods</h4>
+              <p class="text-gray-700 mb-3">Modify list in place, return None</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-purple-400 text-sm">lst.append(x)</code>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master lists with these challenges!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write is_anagram to check if two words are anagrams by sorting their letters</li>
+              <li>• Find all anagrams of "takes" in the word list</li>
+              <li>• Create is_palindrome to check if a word reads the same backward</li>
+              <li>• Find all palindromes with at least 7 letters</li>
+              <li>• Write reverse_sentence to reverse the word order in a sentence</li>
+              <li>• Create total_length to sum the lengths of all words in a list</li>
+              <li>• Experiment with aliasing: create two lists, make one an alias, and observe changes</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 9!
+
+# Example: Creating lists
+numbers = [42, 123]
+cheeses = ['Cheddar', 'Edam', 'Gouda']
+mixed = ['spam', 2.0, 5, [10, 20]]
+
+print('Numbers:', numbers)
+print('Cheeses:', cheeses)
+print('Length:', len(cheeses))
+
+# Example: Lists are mutable
+numbers[1] = 17
+print('Modified:', numbers)
+
+# Example: List slicing
+letters = ['a', 'b', 'c', 'd']
+print('Slice [1:3]:', letters[1:3])
+print('Copy:', letters[:])
+
+# Example: List operations
+t1 = [1, 2]
+t2 = [3, 4]
+print('Concatenate:', t1 + t2)
+print('Repeat:', ['spam'] * 3)
+print('Sum:', sum(t1))
+
+# Example: List methods
+letters.append('e')
+print('After append:', letters)
+
+# Example: Split and join
+sentence = 'pining for the fjords'
+words = sentence.split()
+print('Words:', words)
+print('Joined:', ' '.join(words))
+
+# Example: Sorting
+scramble = ['c', 'a', 'b']
+print('Sorted:', sorted(scramble))
+print('Original:', scramble)"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 17: Inheritance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 17: Inheritance
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Creating Specialized Classes from Existing Ones
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Inheritance</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Parent & Child</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Specialization</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Representing Cards -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Representing Playing Cards</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Before learning inheritance, let's build a Card class. We'll use integer encoding to make cards easy to compare—mapping suits and ranks to numbers.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Encoding Suits and Ranks</h3>
+            <p class="text-gray-700 mb-4">
+              Map suit names and ranks to integers:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="bg-blue-50 rounded p-4">
+                <p class="font-bold text-blue-800 mb-2">Suits</p>
+                <p class="text-sm text-gray-700">0: Clubs</p>
+                <p class="text-sm text-gray-700">1: Diamonds</p>
+                <p class="text-sm text-gray-700">2: Hearts</p>
+                <p class="text-sm text-gray-700">3: Spades</p>
+              </div>
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Ranks</p>
+                <p class="text-sm text-gray-700">2-10: Face value</p>
+                <p class="text-sm text-gray-700">11: Jack</p>
+                <p class="text-sm text-gray-700">12: Queen</p>
+                <p class="text-sm text-gray-700">13: King</p>
+                <p class="text-sm text-gray-700">14: Ace</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Class Variables</h3>
+            <p class="text-gray-700 mb-4">
+              Store mappings as class variables (shared by all instances):
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Card:
+    \"\"\"Represents a standard playing card.\"\"\"
+    
+    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+    rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7',
+                  '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    
+    def __init__(self, suit, rank):
+        self.suit = suit
+        self.rank = rank
+
+# Access class variables
+Card.suit_names[0]
+# 'Clubs'
+
+Card.rank_names[11]
+# 'Jack'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Design Choice:</span> rank_names starts with None so index 2 maps to '2', index 3 to '3', etc. Element 14 is 'Ace' (high).
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Card Methods -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Card String Representation</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Use __str__ to create human-readable card representations. This makes testing and debugging much easier!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The __str__ Method</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Card:
+    # ... class variables and __init__ ...
+    
+    def __str__(self):
+        rank_name = Card.rank_names[self.rank]
+        suit_name = Card.suit_names[self.suit]
+        return f'{rank_name} of {suit_name}'
+
+queen = Card(1, 12)  # Diamonds, Queen
+print(queen)
+# Queen of Diamonds</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Comparing Cards -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Comparing Cards</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Define special methods to make comparison operators work with cards. This makes cards sortable and comparable!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Equality: __eq__</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Card:
+    def __eq__(self, other):
+        return self.suit == other.suit and self.rank == other.rank
+
+queen = Card(1, 12)
+queen2 = Card(1, 12)
+
+queen == queen2
+# True (same suit and rank)
+
+six = Card(1, 6)
+queen == six
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Less Than: __lt__</h3>
+            <p class="text-gray-700 mb-4">
+              Compare by suit first, then rank:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Card:
+    def to_tuple(self):
+        return (self.suit, self.rank)
+    
+    def __lt__(self, other):
+        return self.to_tuple() < other.to_tuple()
+
+six < queen
+# True (same suit, but 6 < 12)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Totally Ordered</h3>
+            <p class="text-gray-700 mb-4">
+              With __eq__, __lt__, and __le__, cards are totally ordered:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Any two cards can be compared</p>
+              <p>• Results are consistent (no contradictions)</p>
+              <p>• Cards can be sorted!</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🎴 Tuple Comparison:</span> Python compares tuples element by element, perfect for our suit-then-rank logic!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Decks -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating a Deck</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A Deck holds a collection of Card objects. We'll add methods to shuffle, sort, and deal cards.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Deck Class</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Deck:
+    def __init__(self, cards):
+        self.cards = cards
+    
+    @staticmethod
+    def make_cards():
+        cards = []
+        for suit in range(4):
+            for rank in range(2, 15):
+                card = Card(suit, rank)
+                cards.append(card)
+        return cards
+
+# Create a full deck
+cards = Deck.make_cards()
+deck = Deck(cards)
+len(deck.cards)
+# 52</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Deck Operations</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>import random
+
+class Deck:
+    def take_card(self):
+        return self.cards.pop()
+    
+    def put_card(self, card):
+        self.cards.append(card)
+    
+    def shuffle(self):
+        random.shuffle(self.cards)
+    
+    def sort(self):
+        self.cards.sort()  # Uses Card.__lt__
+
+# Deal a card
+card = deck.take_card()
+
+# Shuffle
+deck.shuffle()
+
+# Sort
+deck.sort()</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🔄 Delegation:</span> Deck.sort just calls list.sort, passing responsibility to the built-in method. This is called delegation!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Inheritance Basics -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Inheritance: Parents and Children</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Inheritance lets you create a new class based on an existing one. The new class (child) inherits all methods and attributes from the parent, but can add or override them.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Defining a Child Class</h3>
+            <p class="text-gray-700 mb-4">
+              Put the parent class name in parentheses:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Hand(Deck):
+    \"\"\"Represents a hand of playing cards.\"\"\"
+    
+    def __init__(self, label=''):
+        self.label = label
+        self.cards = []
+
+# Hand inherits from Deck
+hand = Hand('player 1')
+hand.label
+# 'player 1'
+
+# Can use Deck methods!
+card = deck.take_card()
+hand.put_card(card)  # Inherited from Deck</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Inheritance Rules</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">1.</span> Child instances have all parent attributes (plus extras)</p>
+              <p><span class="font-bold text-blue-600">2.</span> Child has all parent methods (plus extras)</p>
+              <p><span class="font-bold text-blue-600">3.</span> Child methods can override parent methods</p>
+              <p><span class="font-bold text-blue-600">4.</span> Overriding methods should be compatible (same parameters, compatible results)</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">Parent Class (Deck)</h4>
+              <p class="text-gray-700 mb-2">• General purpose</p>
+              <p class="text-gray-700 mb-2">• Basic operations</p>
+              <p class="text-gray-700">• Foundation for children</p>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-6">
+              <h4 class="font-bold text-purple-800 mb-3 text-xl">Child Class (Hand)</h4>
+              <p class="text-gray-700 mb-2">• Specialized purpose</p>
+              <p class="text-gray-700 mb-2">• Inherits parent operations</p>
+              <p class="text-gray-700">• Adds specific features</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Polymorphism -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Polymorphism</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Methods that work with multiple types are called polymorphic. This makes code more flexible and reusable!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Polymorphic Method Example</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Deck:
+    def move_cards(self, other, num):
+        for i in range(num):
+            card = self.take_card()
+            other.put_card(card)
+
+# Works with any combination!
+deck.move_cards(hand, 5)      # Deck → Hand
+hand.move_cards(deck, 2)      # Hand → Deck
+hand1.move_cards(hand2, 3)    # Hand → Hand</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Polymorphism Works</h3>
+            <p class="text-gray-700 mb-4">
+              The method works because:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Both Deck and Hand have take_card() and put_card()</p>
+              <p>• The method doesn't care about the specific type</p>
+              <p>• It just needs objects with the right methods</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎭 Polymorphism:</span> "Many forms" — one method works with many types. This is a key benefit of inheritance!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Specialization -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Specialization</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Create specialized versions of classes for specific purposes. BridgeHand inherits from Hand but adds bridge-specific functionality.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">BridgeHand Class</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class BridgeHand(Hand):
+    \"\"\"Represents a bridge hand.\"\"\"
+    
+    hcp_dict = {
+        'Ace': 4,
+        'King': 3,
+        'Queen': 2,
+        'Jack': 1,
+    }
+    
+    def high_card_point_count(self):
+        count = 0
+        for card in self.cards:
+            rank_name = Card.rank_names[card.rank]
+            count += BridgeHand.hcp_dict.get(rank_name, 0)
+        return count
+
+hand = BridgeHand('player 2')
+deck.move_cards(hand, 5)
+hand.high_card_point_count()
+# Returns point total</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Specialization Benefits</h3>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Reuses Hand functionality (take_card, put_card, etc.)</p>
+              <p>• Adds bridge-specific features (scoring)</p>
+              <p>• No need to modify the parent class</p>
+              <p>• Natural reflection of problem structure</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🎯 Design Pattern:</span> Specialization creates domain-specific classes from general-purpose ones!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Liskov Substitution Principle -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">The Liskov Substitution Principle</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Named after computer scientist Barbara Liskov, this principle ensures inheritance is used correctly.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Principle</h3>
+            <p class="text-gray-700 mb-4">
+              Any code designed for a parent class should work with child classes:
+            </p>
+            <div class="space-y-3 text-gray-700">
+              <p>✅ <span class="font-bold">Child instances:</span> Have all parent attributes (can have more)</p>
+              <p>✅ <span class="font-bold">Child methods:</span> Include all parent methods (can have more)</p>
+              <p>✅ <span class="font-bold">Overriding:</span> New methods take same parameters, return compatible results</p>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Breaking the Rules</h3>
+            <p class="text-gray-700 mb-4">
+              If you violate these rules:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Code expecting a parent won't work with children</p>
+              <p>• Your program will collapse like a house of cards!</p>
+              <p>• Debugging becomes very difficult</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📜 Design Law:</span> Follow the Liskov Substitution Principle to create robust, maintainable inheritance hierarchies!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Inheritance</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Inheritance can make code harder to read because method definitions are spread across classes. Use these techniques to track execution flow.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Finding Method Definitions</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def find_defining_class(obj, method_name):
+    \"\"\"Find the class where a method is defined.\"\"\"
+    for typ in type(obj).mro():
+        if method_name in vars(typ):
+            return typ
+    return f'Method {method_name} not found.'
+
+hand = BridgeHand('player 3')
+find_defining_class(hand, 'shuffle')
+# <class 'Deck'></code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method Resolution Order (MRO)</h3>
+            <p class="text-gray-700 mb-4">
+              Python searches for methods in this order:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>1. The instance's class (BridgeHand)</p>
+              <p>2. The parent class (Hand)</p>
+              <p>3. The grandparent class (Deck)</p>
+              <p>4. And so on up the hierarchy</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🔍 Debugging Tip:</span> Add print statements at method beginnings to trace execution flow through your inheritance hierarchy!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master inheritance and card games!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Create a Trick class (inherits from Deck) and find_winner method</li>
+              <li>• Write PokerHand class with has_flush method</li>
+              <li>• Implement has_straight for poker hands</li>
+              <li>• Create has_straight_flush combining both checks</li>
+              <li>• Write has_pair, has_full_house for poker</li>
+              <li>• Debug the Kangaroo class (mutable default parameter bug!)</li>
+              <li>• Experiment with inheritance hierarchies</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the inheritance examples with playing cards!
+
+# Card class with comparisons
+class Card:
+    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+    rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7',
+                  '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    
+    def __init__(self, suit, rank):
+        self.suit = suit
+        self.rank = rank
+    
+    def __str__(self):
+        return f'{Card.rank_names[self.rank]} of {Card.suit_names[self.suit]}'
+    
+    def __eq__(self, other):
+        return self.suit == other.suit and self.rank == other.rank
+    
+    def to_tuple(self):
+        return (self.suit, self.rank)
+    
+    def __lt__(self, other):
+        return self.to_tuple() < other.to_tuple()
+
+# Deck class
+class Deck:
+    def __init__(self, cards):
+        self.cards = cards
+    
+    def take_card(self):
+        return self.cards.pop()
+    
+    def put_card(self, card):
+        self.cards.append(card)
+
+# Hand inherits from Deck
+class Hand(Deck):
+    def __init__(self, label=''):
+        self.label = label
+        self.cards = []
+
+# Create some cards
+queen = Card(1, 12)  # Diamonds Queen
+six = Card(1, 6)     # Diamonds 6
+print(f'{queen}')
+print(f'{six}')
+
+# Test comparisons
+print(f'\nQueen == six? {queen == six}')
+print(f'Six < queen? {six < queen}')
+
+# Create a hand
+hand = Hand('Player 1')
+hand.put_card(queen)
+hand.put_card(six)
+print(f'\n{hand.label} has {len(hand.cards)} cards')"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

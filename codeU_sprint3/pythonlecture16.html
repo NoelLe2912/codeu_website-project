@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 14: Classes and Objects</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 16: Classes and Objects
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Continuing our tour of Object-Oriented Programming (OOP)
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Identity</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Deep Copy</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Polymorphism</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Creating a Point -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating a Point</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            In computer graphics, a location on the screen is often represented using a pair of coordinates in an x-y plane. 
+            By convention, the point <code>(0, 0)</code> usually represents the upper-left corner of the screen, and 
+            <code>(x, y)</code> represents the point <code>x</code> units to the right and <code>y</code> units down from the origin.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Defining the Point Class</h3>
+            <p class="text-gray-700 mb-4">
+              In object-oriented programming, it is most idiomatic to create a new type to represent points as objects.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>class Point:
+    """Represents a point in 2-D space."""
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        
+    def __str__(self):
+        return f'Point({self.x}, {self.y})'
+
+# Instantiate and display a Point object
+start = Point(0, 0)
+print(start)
+# Output: Point(0, 0)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Translating a Point</h3>
+            <p class="text-gray-700 mb-4">
+              We can write a method like <code>translate</code> that modifies an existing point, or a method like <code>translated</code> that creates a new one.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Inside class Point...
+    def translate(self, dx, dy):
+        self.x += dx
+        self.y += dy
+
+    def translated(self, dx=0, dy=0):
+        from copy import copy
+        point = copy(self)
+        point.translate(dx, dy)
+        return point
+
+end2 = start.translated(0, 150)
+print(end2)
+# Output: Point(0, 150)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Creating a Line -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating a Line</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Now let's define a class that represents the line segment between two points. As usual, we'll start with an 
+            <code>__init__</code> method and a <code>__str__</code> method.
+          </p>
+
+          <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <pre class="text-green-400 font-mono text-sm"><code>class Line:
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+        
+    def __str__(self):
+        return f'Line({self.p1}, {self.p2})'
+
+# Instantiate using Point objects
+end1 = Point(300, 0)
+line1 = Line(start, end1)
+print(line1)
+# Output: Line(Point(0, 0), Point(300, 0))</code></pre>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Nested Objects:</span> Notice how the f-string in <code>__str__</code> evaluates <code>self.p1</code>. Because the result is a Point object, it automatically invokes the <code>__str__</code> method from the Point class!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Equivalence and Identity -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Equivalence and Identity</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Suppose we create two points with the exact same coordinates. Are they the same object?
+          </p>
+
+          <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <pre class="text-green-400 font-mono text-sm"><code>p1 = Point(200, 100)
+p2 = Point(200, 100)
+
+p1 == p2
+# False (by default, == checks if they are the exact same object)
+
+p1 is p2
+# False</code></pre>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Overriding the == Operator</h3>
+            <p class="text-gray-700 mb-4">
+              If we want to change that behavior, we can provide a special method called <code>__eq__</code> that defines what it means for two Point objects to be "equal".
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Inside class Point...
+    def __eq__(self, other):
+        return (self.x == other.x) and (self.y == other.y)
+
+# Now it checks equivalence!
+p1 == p2
+# True</code></pre>
+            </div>
+          </div>
+          
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">⚠️ Remember:</span> It's not possible to override the <code>is</code> operator—it always checks whether the objects are identical in memory. But for your types, you can override <code>==</code> to check equivalence.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Rectangles and Deep Copy -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Rectangles & The Deep Copy Problem</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Let's define a <code>Rectangle</code> specified by its width, height, and the location of its upper-left corner (a Point).
+          </p>
+
+          <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <pre class="text-green-400 font-mono text-sm"><code>class Rectangle:
+    def __init__(self, width, height, corner):
+        self.width = width
+        self.height = height
+        self.corner = corner
+        
+    def __str__(self):
+        return f'Rectangle({self.width}, {self.height}, {self.corner})'
+
+    def translate(self, dx, dy):
+        self.corner.translate(dx, dy)</code></pre>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Aliasing Bug</h3>
+            <p class="text-gray-700 mb-4">
+              When we use standard <code>copy()</code> to duplicate a rectangle, it copies the Rectangle object but <strong>not</strong> the nested Point object. They end up sharing the same corner!
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>from copy import copy
+
+box1 = Rectangle(100, 50, Point(30, 20))
+box2 = copy(box1)
+
+box1 is box2
+# False (they are different rectangles)
+
+box1.corner is box2.corner
+# True! (they share the SAME corner object)
+
+box2.translate(30, 20) 
+# Wait, this just moved box1's corner too!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Fix: deepcopy</h3>
+            <p class="text-gray-700 mb-4">
+              The <code>copy</code> module provides <code>deepcopy</code>, which copies not only the object but also the objects it refers to.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>from copy import deepcopy
+
+box3 = Rectangle(100, 50, Point(20, 20))
+box4 = deepcopy(box3)
+
+box3.corner is box4.corner
+# False (Now they are completely separate!)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Polymorphism -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Polymorphism</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            If we give <code>Line</code>, <code>Rectangle</code>, and a custom <code>Circle</code> class their own <code>draw()</code> methods, we can do something powerful:
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>shapes = [line1, line2, box3, box4]
+
+for shape in shapes:
+    shape.draw()</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">✨ Polymorphism:</span> The word comes from Greek roots that mean "many shaped". It's the ability of different types to provide the same methods, allowing you to perform operations by invoking the same method on different types of objects. In a sense, <em>each object knows how to draw itself</em>.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Debugging & Glossary -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging & Glossary</h2>
+          
+          <div class="space-y-4 mb-8">
+            <h3 class="text-2xl font-semibold text-gray-800">Avoiding Bugs</h3>
+            <p class="text-gray-700">In general, there are two ways to avoid aliasing bugs like the one we saw with the shared Point:</p>
+            <ul class="list-disc pl-6 text-gray-700 space-y-2">
+              <li><strong>Avoid sharing objects</strong>: Use <code>deepcopy</code> when duplicating nested structures.</li>
+              <li><strong>Avoid modifying objects</strong>: Replace impure functions (like <code>translate</code>) with pure functions (like <code>translated</code>) that return new objects instead of altering existing ones.</li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-100 p-6 rounded-lg">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Glossary</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">shallow copy:</span> A copy operation that does not copy nested objects.</p>
+              <p><span class="font-bold text-blue-600">deep copy:</span> A copy operation that also copies nested objects.</p>
+              <p><span class="font-bold text-blue-600">polymorphism:</span> The ability of a method or operator to work with multiple types of objects.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Test your OOP skills!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Challenge yourself to build these:</p>
+            <ul class="space-y-2">
+              <li>• Write an <code>__eq__</code> method for the Line class that evaluates to True if they refer to equivalent Point objects, in either order.</li>
+              <li>• Write a Line method called <code>midpoint</code> that returns a new Point object at the center of the line segment.</li>
+              <li>• Write a Rectangle method called <code>midpoint</code> that finds the point in the center of the rectangle.</li>
+              <li>• Write a Rectangle method called <code>make_cross</code> that returns two diagonals intersecting at the center.</li>
+              <li>• Define a <code>Circle</code> class with <code>center</code> and <code>radius</code> attributes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python 3e</em> by Allen B. Downey.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor"># Write your Python code here and click Run!
+import copy
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        
+    def __str__(self):
+        return f'Point({self.x}, {self.y})'
+        
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+class Rectangle:
+    def __init__(self, width, height, corner):
+        self.width = width
+        self.height = height
+        self.corner = corner
+        
+    def __str__(self):
+        return f'Rectangle({self.width}, {self.height}, {self.corner})'
+
+print("--- Equivalence vs Identity ---")
+p1 = Point(10, 20)
+p2 = Point(10, 20)
+print(f"p1 == p2 is {p1 == p2} (Equivalence: __eq__ was called)")
+print(f"p1 is p2 is {p1 is p2} (Identity: they are different objects)")
+
+print("\n--- Shallow Copy Bug ---")
+box1 = Rectangle(100, 50, p1)
+box2 = copy.copy(box1)
+
+print(f"box1.corner is box2.corner: {box1.corner is box2.corner}")
+print("Moving box2's corner x coordinate to 999...")
+box2.corner.x = 999
+print(f"box1's corner x is now: {box1.corner.x} (Whoops!)")
+
+print("\n--- Deep Copy Fix ---")
+import copy as cp
+box3 = Rectangle(100, 50, Point(10, 20))
+box4 = cp.deepcopy(box3)
+
+print(f"box3.corner is box4.corner: {box3.corner is box4.corner}")
+print("Moving box4's corner x to 999...")
+box4.corner.x = 999
+print(f"box3's corner x is still: {box3.corner.x} (Fixed!)")
+</textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+export { default as TuplesAreLikeLists } from "./TuplesAreLikeLists";
+export { default as TuplesAreImmutable } from "./TuplesAreImmutable";
+export { default as TupleAssignment } from "./TupleAssignment";
+export { default as TuplesAsReturnValues } from "./TuplesAsReturnValues";
+export { default as ArgumentPackingAndUnpacking } from "./ArgumentPackingAndUnpacking";
+export { default as PairingElementsWithZip } from "./PairingElementsWithZip";
+export { default as ComparingAndSortingTuples } from "./ComparingAndSortingTuples";
+export { default as InvertingADictionary } from "./InvertingADictionary";
+export { default as DebuggingCompoundDataStructures } from "./DebuggingCompoundDataStructures";
+export { default as PracticeExercises } from "./PracticeExercises";

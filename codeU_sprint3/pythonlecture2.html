@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 2: Variables and Statements</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+</head>
+
+<body class="h-full m-0 flex flex-col overflow-hidden">
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <div class="bg-gray-50 overflow-y-auto transition-[width] duration-100" style="width: 75%; min-width: 150px;" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 2: Variables and Statements
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Storing and Manipulating Data in Python
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Store Values</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Import Modules</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Execute Commands</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Variables -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating Variables</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A variable is like a labeled container that holds a value. You can think of it as giving a name to a piece of data so you can use it later. Creating a variable is called assignment, and it uses the equals sign (=).
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Assignment</h3>
+            <p class="text-gray-700 mb-4">
+              The assignment statement has three parts: the variable name (left), the equals sign (middle), and the value (right).
+            </p>
+            <div class="space-y-4">
+              <div class="border-l-4 border-blue-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Integer Assignment</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">count = 25</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-green-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Float Assignment</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">temperature = 98.6</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-purple-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">String Assignment</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">greeting = 'Hello, Python!'</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using Variables</h3>
+            <p class="text-gray-700 mb-4">
+              After you create a variable, you can use it anywhere you would use a value. The variable acts as a substitute for its contents.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Create a variable
+age = 21
+
+# Use it in calculations
+age + 4        # Result: 25
+
+# Use it with functions
+round(age / 3) # Result: 7</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Important:</span> When you run an assignment statement, nothing appears on screen. Python creates the variable silently. To see what's stored in a variable, type its name or use the print function.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: State Diagrams -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Visualizing Variables: State Diagrams</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A state diagram is a visual representation showing what values your variables hold at a specific moment. It's like taking a snapshot of your program's memory.
+          </p>
+
+          <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-8 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4 text-center">State Diagram Example</h3>
+            <div class="bg-white rounded-lg p-6 text-center">
+              <div class="flex flex-col gap-4 items-center">
+                <div class="flex items-center gap-4">
+                  <span class="text-xl font-bold text-blue-600">count</span>
+                  <span class="text-2xl">→</span>
+                  <span class="bg-blue-500 text-white px-6 py-2 rounded-lg text-xl">25</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xl font-bold text-green-600">temperature</span>
+                  <span class="text-2xl">→</span>
+                  <span class="bg-green-500 text-white px-6 py-2 rounded-lg text-xl">98.6</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xl font-bold text-purple-600">greeting</span>
+                  <span class="text-2xl">→</span>
+                  <span class="bg-purple-500 text-white px-6 py-2 rounded-lg text-xl">'Hello, Python!'</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">📊 Why State Diagrams Matter:</span> They help you track what your variables contain as your program runs. This becomes especially useful when debugging or understanding complex programs.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Variable Naming Rules -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Naming Your Variables</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Variable names aren't completely freeform. Python has specific rules about what makes a valid name, and following conventions makes your code easier to read.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Rules</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-green-600">✓</span> Can contain letters, numbers, and underscores (_)</p>
+              <p><span class="font-bold text-green-600">✓</span> Must start with a letter or underscore</p>
+              <p><span class="font-bold text-green-600">✓</span> Can be any length</p>
+              <p><span class="font-bold text-blue-600">→</span> Uppercase is allowed but lowercase is conventional</p>
+              <p><span class="font-bold text-red-600">✗</span> Cannot start with a number</p>
+              <p><span class="font-bold text-red-600">✗</span> Cannot contain spaces or punctuation (except underscore)</p>
+              <p><span class="font-bold text-red-600">✗</span> Cannot be a Python keyword</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Valid Names</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-sm"><code>user_name
+total_count
+item2
+_private_var
+averageScore</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">✗ Invalid Names</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-red-400 font-mono text-sm"><code>2fast        # starts with number
+user-name    # contains dash
+my var       # contains space
+class        # keyword
+item!        # contains punctuation</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Python Keywords</h3>
+            <p class="text-gray-700 mb-4">
+              These special words are reserved by Python and cannot be used as variable names:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-4">
+              <pre class="text-yellow-400 font-mono text-sm"><code>False    None     True     and      as       assert   async    await
+break    class    continue def      del      elif     else     except
+finally  for      from     global   if       import   in       is
+lambda   nonlocal not      or       pass     raise    return   try
+while    with     yield</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Import Statement -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Importing Modules</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python comes with many built-in collections of useful code called modules. To access the functions and values in a module, you need to import it first.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The math Module</h3>
+            <p class="text-gray-700 mb-4">
+              One of the most commonly used modules is math, which provides mathematical functions and constants.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># First, import the module
+import math
+
+# Now you can access its contents
+math.pi           # Result: 3.141592653589793
+math.sqrt(16)     # Result: 4.0
+math.pow(3, 4)    # Result: 81.0</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Dot Operator</h3>
+            <p class="text-gray-700 mb-4">
+              To use something from a module, write the module name, then a dot (.), then the name of the variable or function. This tells Python exactly where to find what you're looking for.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>math.sqrt(100)    # sqrt function from math module
+math.e            # e constant from math module</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Power Tip:</span> When you see code like math.pow(2, 3), read it as "the pow function from the math module." The dot connects the module to its contents.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Expressions vs Statements -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Expressions vs Statements</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Understanding the difference between expressions and statements is fundamental to reading and writing Python code.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-4">Expressions</h3>
+              <p class="text-gray-700 mb-4">
+                An expression is anything that has a value. When Python evaluates an expression, it produces a result.
+              </p>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-sm"><code>42
+7 + 5
+math.sqrt(25)
+user_name</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6">
+              <h3 class="text-2xl font-semibold text-gray-800 mb-4">Statements</h3>
+              <p class="text-gray-700 mb-4">
+                A statement is a command that does something. When Python executes a statement, it performs an action.
+              </p>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-sm"><code>x = 10
+import math
+print(x)</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Key Differences</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Expressions</span> have values that can be used in calculations</p>
+              <p><span class="font-bold text-green-600">Statements</span> perform actions but don't produce values</p>
+              <p><span class="font-bold text-purple-600">Example:</span> In <code class="bg-gray-900 text-green-400 px-2 py-1 rounded">total = 15 + 7</code>, the part <code class="bg-gray-900 text-green-400 px-2 py-1 rounded">15 + 7</code> is an expression (value: 22), and the whole line is a statement (action: assign)</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: The print Function -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Displaying Output with print</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The print function is how you show information to users. Unlike just typing an expression (which only shows the last result), print can display multiple values.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Use print?</h3>
+            <p class="text-gray-700 mb-4">
+              When you type expressions in Python, only the last one gets displayed:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6 mb-4">
+              <pre class="text-green-400 font-mono text-sm"><code># Only the second value appears
+count + 5
+count + 10    # Only this shows</code></pre>
+            </div>
+            <p class="text-gray-700 mb-4">
+              But with print, you can show as many values as you want:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>print(count + 5)
+print(count + 10)  # Both appear now!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Multiple Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              You can pass multiple values to print separated by commas. Python will display them all with spaces in between.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>name = 'Alice'
+score = 95
+
+print('Student:', name, 'Score:', score)
+# Output: Student: Alice Score: 95</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">✓ Pro Tip:</span> print automatically adds spaces between values and moves to a new line after printing. This makes it perfect for displaying formatted output!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Function Arguments -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Understanding Function Arguments</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When you call a function, the values you put in the parentheses are called arguments. Different functions accept different numbers and types of arguments.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Required Arguments</h3>
+            <div class="space-y-4">
+              <div class="border-l-4 border-blue-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">One Argument</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-green-400">abs(-42)        # Result: 42</code>
+                </div>
+                <p class="text-gray-600 text-sm">The abs function needs exactly one number</p>
+              </div>
+
+              <div class="border-l-4 border-green-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Two Arguments</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-green-400">math.pow(4, 3)  # Result: 64.0</code>
+                </div>
+                <p class="text-gray-600 text-sm">The pow function requires a base and an exponent</p>
+              </div>
+
+              <div class="border-l-4 border-purple-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Variable Arguments</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-green-400">print('Any', 'number', 'of', 'values')</code>
+                </div>
+                <p class="text-gray-600 text-sm">The print function accepts any number of arguments</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Optional Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              Some functions have optional arguments that provide additional control:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># round with one argument
+round(3.7)           # Result: 4
+
+# round with optional second argument (decimal places)
+round(3.14159, 2)    # Result: 3.14
+
+# int with optional base argument
+int('1010', 2)       # Result: 10 (binary to decimal)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700 mb-3">
+              <span class="font-bold text-red-800">⚠️ Common Errors:</span>
+            </p>
+            <div class="space-y-2 text-gray-700">
+              <p>• Too many arguments: <code class="bg-gray-900 text-red-400 px-2 py-1 rounded">abs(5, 2)</code> ← TypeError</p>
+              <p>• Too few arguments: <code class="bg-gray-900 text-red-400 px-2 py-1 rounded">math.pow(4)</code> ← TypeError</p>
+              <p>• Wrong type: <code class="bg-gray-900 text-red-400 px-2 py-1 rounded">math.sqrt('nine')</code> ← TypeError</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 8: Comments -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Writing Comments</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Comments are notes to yourself and other programmers. They explain what your code does in plain English, making it easier to understand and maintain.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How to Write Comments</h3>
+            <p class="text-gray-700 mb-4">
+              Any text after a # symbol is ignored by Python. Comments can appear on their own line or at the end of a code line.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Calculate total minutes in a day
+minutes = 24 * 60
+
+hours = 8      # typical work day length</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Good Comments</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-sm"><code># velocity in meters/second
+v = 15
+
+# convert temperature to Celsius
+celsius = (fahr - 32) * 5/9</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">✗ Useless Comments</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-red-400 font-mono text-sm"><code># assign 15 to v
+v = 15
+
+# add two numbers
+result = x + y</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">📝 Comment Best Practices:</span> Explain why you're doing something, not what the code obviously does. Assume readers can read Python—help them understand your reasoning and intent.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Three Types of Errors</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Every programmer encounters errors. Knowing what type of error you're dealing with helps you fix it faster.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-red-100 to-red-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">🔴</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center text-xl">Syntax Error</h4>
+              <p class="text-gray-700 text-center mb-3">Python can't understand your code</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-red-400 text-xs">million! = 100</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">Invalid punctuation</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">🟡</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center text-xl">Runtime Error</h4>
+              <p class="text-gray-700 text-center mb-3">Code runs but crashes</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-yellow-400 text-xs">'100' / 5</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">Can't divide string</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">🟣</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center text-xl">Semantic Error</h4>
+              <p class="text-gray-700 text-center mb-3">Code runs but wrong result</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-purple-400 text-xs">1 + 5 / 2</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">Wrong order of ops</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Detailed Examples</h3>
+            <div class="space-y-4">
+              <div>
+                <p class="font-bold text-red-600 mb-2">Syntax Error: Breaks structure rules</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-red-400">student count = 30    # spaces not allowed</code>
+                </div>
+                <p class="text-gray-600 text-sm">Python refuses to run the program</p>
+              </div>
+
+              <div>
+                <p class="font-bold text-yellow-600 mb-2">Runtime Error (Exception): Type mismatch</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-yellow-400">'hello' - 5          # can't subtract from string</code>
+                </div>
+                <p class="text-gray-600 text-sm">Program starts but crashes during execution</p>
+              </div>
+
+              <div>
+                <p class="font-bold text-purple-600 mb-2">Semantic Error: Logic mistake</p>
+                <div class="bg-gray-900 rounded p-3 mb-2">
+                  <code class="text-purple-400">average = 10 + 20 / 2    # Result: 20, not 15!</code>
+                </div>
+                <p class="text-gray-600 text-sm">Need parentheses: (10 + 20) / 2</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Try these exercises in the Python terminal to reinforce what you've learned!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Challenge Yourself:</p>
+            <ul class="space-y-2">
+              <li>• Create a variable called radius with value 5, then calculate volume of a sphere (formula: 4/3 × π × r³)</li>
+              <li>• Import the math module and use math.cos and math.sin to verify that sin²(x) + cos²(x) = 1</li>
+              <li>• Experiment with invalid variable names and see what error messages you get</li>
+              <li>• Calculate how many seconds are in a week using variables for days, hours, minutes</li>
+              <li>• Use int() to convert the string '1101' from binary (base 2) to decimal</li>
+              <li>• Try using round() with different decimal places on math.pi</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="w-1.5 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors duration-200" id="resizer"></div>
+
+    <div class="flex-1 bg-[#1e1e1e] overflow-y-auto flex flex-col">
+      <div class="font-mono text-[#d4d4d4] p-5 h-full flex flex-col">
+        <div class="text-[#4ec9b0] mb-5 text-2xl font-bold">🐍 Python Practice Terminal</div>
+        
+        <div class="flex-1 flex flex-col gap-5">
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Python Code:</label>
+            <textarea id="code" class="flex-1 bg-[#2d2d2d] text-[#d4d4d4] border border-[#3e3e3e] rounded px-3 py-3 font-mono text-sm resize-none min-h-[200px] focus:outline-none focus:border-[#007acc]" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 2!
+
+# Example: Create variables
+name = 'Alice'
+age = 25
+print('Hello,', name, '- Age:', age)
+
+# Example: Use math module
+import math
+print('Pi =', math.pi)
+print('Square root of 16 =', math.sqrt(16))"></textarea>
+            <button id="runBtn" class="bg-[#0e639c] text-white border-0 px-5 py-2.5 rounded cursor-pointer text-sm font-bold hover:bg-[#1177bb] transition-colors mt-2.5 disabled:bg-[#555] disabled:cursor-not-allowed" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Output:</label>
+            <div id="output" class="flex-1 bg-[#1e1e1e] border border-[#3e3e3e] rounded px-3 py-3 overflow-y-auto whitespace-pre-wrap text-sm min-h-[200px]"><span class="text-[#4ec9b0] italic">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="text-[#4ec9b0]">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="text-[#f48771]">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="text-[#f48771]">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="text-[#4ec9b0] italic">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="text-[#f48771]">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

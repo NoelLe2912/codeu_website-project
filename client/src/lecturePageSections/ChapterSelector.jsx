@@ -1,0 +1,277 @@
+import { Box, Select, Text } from "@chakra-ui/react";
+
+export const chapters = {
+  chapter1: [
+    "Working with Numbers: Arithmetic Operators",
+    "Understanding Expressions",
+    "Python's Built-in Functions",
+    "Strings: Working with Text",
+    "Understanding Data Types",
+    "Programming Languages vs Human Languages",
+    "Ready to Practice?",
+  ],
+  chapter2: [
+    "Creating Variables",
+    "Visualizing Variables: State Diagrams",
+    "Naming Your Variables",
+    "Importing Modules",
+    "Expressions vs Statements",
+    "Displaying Output with print",
+    "Understanding Function Arguments",
+    "Writing Comments",
+    "Three Types of Errors",
+    "Practice Exercises",
+  ],
+  chapter3: [
+    "Creating Your Own Functions",
+    "Adding Parameters",
+    "Functions Working Together",
+    "Repeating with For Loops",
+    "Variable Scope: Local vs Global",
+    "Visualizing Function Calls: Stack Diagrams",
+    "Understanding Tracebacks",
+    "The Power of Functions",
+    "Debugging Functions",
+    "Practice Exercises",
+  ],
+  chapter4: [
+    "Text-Based Drawing",
+    "Encapsulation: Wrapping Code in Functions",
+    "Generalization: Adding Parameters",
+    "Interface Design",
+    "Building Complex Functions from Simple Ones",
+    "Refactoring: Improving Your Code",
+    "Documenting with Docstrings",
+    "A Development Plan",
+    "Preconditions and Postconditions",
+    "Practice Exercises",
+  ],
+  chapter5: [
+    "Integer Division and Modulus",
+    "Boolean Expressions",
+    "Logical Operators",
+    "If Statements",
+    "Nested Conditionals",
+    "Recursion: Functions Calling Themselves",
+    "Understanding Recursive Calls",
+    "Infinite Recursion",
+    "Getting Input from Users",
+    "Practice Exercises",
+    "Practical Examples",
+    "Debugging Tips",
+  ],
+  chapter6: [
+    "Functions Return Values",
+    "Functions That Return None",
+    "Return Values and Conditionals",
+    "Incremental Development",
+    "Boolean Functions",
+    "Recursion with Return Values",
+    "The Leap of Faith",
+    "Fibonacci Numbers",
+    "Input Validation",
+    "Debugging Return Values",
+    "Practice Exercises",
+  ],
+  chapter7: [
+    "Looping Through Strings",
+    "Creating a Letter Checker Function",
+    "Reading Word Lists from Files",
+    "Updating Variables in Loops",
+    "Counting with Loops",
+    "Simplifying with the in Operator",
+    "The Linear Search Pattern",
+    "Testing with Doctest",
+    "Building More Search Tools",
+    "Real-World Application: Spelling Bee",
+    "Practice Exercises",
+  ],
+  chapter8: [
+    "Strings Are Sequences",
+    "Extracting String Slices",
+    "Immutability of Strings",
+    "Comparing Strings",
+    "Useful String Methods",
+    "Reading and Writing Files",
+    "Finding and Replacing Text",
+    "Introduction to Regular Expressions",
+    "Powerful Regex Patterns",
+    "String Substitution with Regex",
+    "Real-World Application: Wordle",
+    "Practice Exercises",
+  ],
+  chapter9: [
+    "Lists Are Sequences",
+    "Lists Are Mutable",
+    "Slicing Lists",
+    "List Operations",
+    "Powerful List Methods",
+    "Converting Between Lists and Strings",
+    "Looping Through Lists",
+    "Sorting Lists",
+    "Objects and Values",
+    "Aliasing and References",
+    "Lists as Function Arguments",
+    "Building a Word List",
+    "Debugging List Code",
+    "Practice Exercises",
+  ],
+  chapter10: [
+    "Dictionaries Are Mappings",
+    "Different Ways to Create Dictionaries",
+    "Fast Lookups with in",
+    "A Collection of Counters",
+    "Looping Through Dictionaries",
+    "Lists and Dictionaries Together",
+    "Building Lists with Accumulators",
+    "Memoization: Caching Results",
+    "Debugging Large Datasets",
+    "Practice Exercises",
+  ],
+  chapter11: [
+    "Tuples Are Like Lists",
+    "But Tuples Are Immutable",
+    "Tuple Assignment",
+    "Tuples as Return Values",
+    "Argument Packing and Unpacking",
+    "Pairing Elements with zip()",
+    "Comparing and Sorting Tuples",
+    "Inverting a Dictionary",
+    "Debugging Compound Data Structures",
+    "Practice Exercises",
+  ],
+  chapter12: [
+    "Counting Unique Words",
+    "Cleaning Text Data",
+    "Counting Word Frequencies",
+    "Functions with Optional Parameters",
+    "Dictionary Subtraction",
+    "Analyzing Word Pairs (Bigrams)",
+    "Markov Chain Analysis",
+    "Generating New Text",
+    "Debugging Complex Programs",
+    "Practice Exercises",
+  ],
+  chapter13: [
+    "Filenames and Paths",
+    "F-Strings for Formatting",
+    "Serialization: Saving Data Structures",
+    "Databases: Persistent Key-Value Storage",
+    "Storing Data Structures in Shelves",
+    "Hash Functions and File Comparison",
+    "Recursively Searching Directories",
+    "Ephemeral vs Persistent Programs",
+    "Debugging File Operations",
+    "Practice Exercises",
+  ],
+  chapter14: [
+    "Programmer-Defined Types",
+    "Attributes: Object Variables",
+    "Objects as Return Values",
+    "Objects Are Mutable",
+    "Copying Objects",
+    "Pure Functions",
+    "Prototype and Patch Development",
+    "Design-First Development",
+    "Debugging with Objects",
+    "Practice Exercises",
+  ],
+  chapter15: [
+    "Defining Methods",
+    "Converting Functions to Methods",
+    "Static Methods",
+    "Comparing Time Objects",
+    "Special Methods: __str__",
+    "The __init__ Method",
+    "Operator Overloading",
+    "Debugging: Invariants",
+    "Practice Exercises",
+  ],
+  chapter16: [
+    "Creating a Point",
+    "Creating a Line",
+    "Equivalence and Identity",
+    "Rectangles & The Deep Copy Problem",
+    "Polymorphism",
+    "Debugging & Glossary",
+    "Practice Exercises",
+  ],
+  chapter17: [
+    "Representing Playing Cards",
+    "Card String Representation",
+    "Comparing Cards",
+    "Creating a Deck",
+    "Inheritance: Parents and Children",
+    "Polymorphism",
+    "Specialization",
+    "The Liskov Substitution Principle",
+    "Debugging Inheritance",
+    "Practice Exercises",
+  ],
+  chapter18: [
+    "Defining Methods",
+    "Defining Methods",
+    "Static Methods",
+    "Comparing Time Objects",
+    "Special Methods: __str__",
+    "The __init__ Method",
+    "Operator Overloading",
+    "Debugging: Invariants",
+    "Practice Exercises",
+  ],
+};
+
+export const chapterOptions = {
+  chapter1: "Chapter 1: Programming as a Way of Thinking",
+  chapter2: "Chapter 2: Variables and Statements",
+  chapter3: "Chapter 3: Functions",
+  chapter4: "Chapter 4: Functions and Interfaces",
+  chapter5: "Chapter 5: Conditionals and Recursion",
+  chapter6: "Chapter 6: Return Values",
+  chapter7: "Chapter 7: Iteration and Search",
+  chapter8: "Chapter 8: Strings and Regular Expressions",
+  chapter9: "Chapter 9: Lists",
+  chapter10: "Chapter 10: Dictionaries",
+  chapter11: "Chapter 11: Tuples",
+  chapter12: "Chapter 12: Text Analysis and Generation",
+  chapter13: "Chapter 13: Files and Databases",
+  chapter14: "Chapter 14: Classes and Functions",
+  chapter15: "Chapter 15: Classes and Methods",
+  chapter16: "Chapter 16: Objects and Geometry",
+  chapter17: "Chapter 17: Inheritance",
+  chapter18: "Chapter 18: Methods and Operators",
+};
+
+export const ChapterSelector = ({ selectedChapter, onChapterChange }) => {
+  return (
+    <Select
+      size="sm"
+      value={selectedChapter}
+      onChange={(e) => onChapterChange(e.target.value)}
+      borderColor="blue.500"
+      borderWidth="2px"
+      w="280px"
+      minW="280px"
+      maxW="280px"
+      color="gray.800"
+      bg="white"
+      sx={{
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+      }}
+      _focus={{
+        borderColor: "blue.500",
+        boxShadow: "0 0 0 1px #0ea5e9",
+      }}
+    >
+      {Object.entries(chapterOptions).map(([key, label]) => (
+        <option key={key} value={key}>
+          {label}
+        </option>
+      ))}
+    </Select>
+  );
+};
+
+export default ChapterSelector;

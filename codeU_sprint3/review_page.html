@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FAFAFA]">
+
+<div class="min-h-screen flex items-center justify-center p-8 font-sans overflow-hidden select-none" 
+     x-data="orbitalSwiper()">
+    
+    <div class="max-w-7xl w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:translate-x-32">
+        
+        <div class="lg:w-1/3 space-y-6 z-50">
+            <h1 class="text-6xl font-black text-gray-900 leading-tight">What Our <br> CodeU-ers Says</h1>
+            <p class="text-gray-500 text-lg">Drag the stack or click any blurred card to bring it to focus. Perfectly stable, no tilt.</p>
+            <button @click="updateIndex(1)" class="bg-gradient-to-r from-[#86C5FF] to-[#2E5AA7] text-white px-10 py-4 rounded-lg font-bold shadow-xl active:scale-95 transition-all">
+                Sign up now
+            </button>
+        </div>
+
+        <div class="lg:w-2/3 relative h-[700px] w-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+             @mousedown="startDrag"
+             @mousemove.window="onDrag"
+             @mouseup.window="endDrag"
+             @mouseenter="pauseAuto"
+             @mouseleave="resumeAuto"
+             @touchstart="startDrag($event.touches[0])"
+             @touchmove.window="onDrag($event.touches[0])"
+             @touchend.window="endDrag">
+            
+            <div class="relative w-full max-w-md h-full flex items-center justify-center">
+                <template x-for="(review, index) in reviews" :key="review.id">
+                    <div 
+                        @click="jumpTo(index)"
+                        class="bg-white p-6 rounded-xl shadow-[0_15px_45px_rgba(0,0,0,0.08)] flex items-center gap-5 absolute w-full border-l-[6px] will-change-transform transition-all duration-500 hover:shadow-lg"
+                        :style="calculateStyle(index)"
+                        :class="isCenter(index) ? 'border-[#5C45FD] cursor-default' : 'border-transparent cursor-pointer'">
+                        
+                        <div class="flex-shrink-0 p-1 rounded-full shadow-sm" :class="review.color">
+                            <img :src="review.img" class="w-16 h-16 rounded-full object-cover pointer-events-none">
+                        </div>
+
+                        <div class="flex-1 pointer-events-none">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-gray-900" x-text="review.name"></h3>
+                                <div class="flex text-yellow-400">
+                                    <template x-for="star in 5">
+                                        <svg class="w-4 h-4" :class="star <= review.rating ? 'fill-current' : 'text-gray-300 fill-current'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                        </svg>
+                                    </template>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-xs leading-snug mt-1" x-text="review.text"></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function orbitalSwiper() {
+    return {
+        reviews: [
+            { id: 1, name: 'Mehwish', rating: 5, text: 'Compliment interested discretion estimating on stimulated apartments oh.', img: 'https://i.pravatar.cc/150?u=11', color: 'bg-blue-100' },
+            { id: 2, name: 'Elizabeth Jeff', rating: 4, text: 'Dear so sing when in find read of call. As distrusts behaviour abilities defective is.', img: 'https://i.pravatar.cc/150?u=12', color: 'bg-pink-100' },
+            { id: 3, name: 'Emily Thomas', rating: 5, text: 'Never at water me might. On formed merits hunted unable merely by mr whence or.', img: 'https://i.pravatar.cc/150?u=13', color: 'bg-teal-100' },
+            { id: 4, name: 'Justin Case', rating: 5, text: 'Extremely helpful service and very responsive team.', img: 'https://i.pravatar.cc/150?u=14', color: 'bg-orange-100' },
+            { id: 5, name: 'Sarah Connor', rating: 4, text: 'The interface is intuitive and the transition effects are beautiful.', img: 'https://i.pravatar.cc/150?u=15', color: 'bg-purple-100' }
+        ],
+        // ... rest of your script stays the same ...
+        activeIndex: 2,
+        dragging: false,
+        startY: 0,
+        dragY: 0,
+        timer: null,
+
+        init() {
+            this.resumeAuto();
+        },
+
+        jumpTo(index) {
+            if(this.isCenter(index)) return;
+            this.activeIndex = index;
+        },
+
+        resumeAuto() {
+            this.timer = setInterval(() => this.updateIndex(1), 4000);
+        },
+        pauseAuto() {
+            clearInterval(this.timer);
+        },
+
+        startDrag(e) {
+            this.dragging = true;
+            this.startY = e.clientY;
+            this.pauseAuto();
+        },
+        onDrag(e) {
+            if (!this.dragging) return;
+            this.dragY = e.clientY - this.startY;
+
+            if (Math.abs(this.dragY) > 160) {
+                this.updateIndex(this.dragY > 0 ? -1 : 1);
+                this.startY = e.clientY;
+                this.dragY = 0;
+            }
+        },
+        endDrag() {
+            if (!this.dragging) return;
+            if (Math.abs(this.dragY) > 50) {
+                this.updateIndex(this.dragY > 0 ? -1 : 1);
+            }
+            this.dragging = false;
+            this.dragY = 0;
+            this.resumeAuto();
+        },
+        updateIndex(dir) {
+            this.activeIndex = (this.activeIndex + dir + this.reviews.length) % this.reviews.length;
+        },
+        isCenter(index) {
+            return index === this.activeIndex;
+        },
+        calculateStyle(index) {
+            let diff = index - this.activeIndex;
+            const len = this.reviews.length;
+            
+            if (diff > len / 2) diff -= len;
+            if (diff < -len / 2) diff += len;
+
+            const yBase = diff * 150;
+            const xBase = Math.abs(diff) * -100 + (index === this.activeIndex ? 40 : 0);
+            const scale = 1 - Math.abs(diff) * 0.15;
+            const opacity = 1 - Math.abs(diff) * 0.4;
+            const blur = Math.abs(diff) * 2;
+            const zIndex = 50 - Math.abs(diff) * 10;
+            
+            const moveY = this.dragY * 0.5;
+
+            return `
+                transform: translate3d(${xBase}px, ${yBase + moveY}px, 0) scale(${scale});
+                opacity: ${opacity};
+                z-index: ${Math.round(zIndex)};
+                filter: blur(${blur}px);
+                transition: ${this.dragging ? 'none' : 'transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s'};
+            `;
+        }
+    }
+}
+</script>
+</body>
+</html>

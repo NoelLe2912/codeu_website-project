@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Python</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+</head>
+
+<body class="h-full m-0 flex flex-col overflow-hidden">
+  <!-- ✅ FULL-WIDTH HEADER -->
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ✅ MAIN CONTENT AREA (Resizable Panels) -->
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <!-- LEFT PANEL -->
+    <div class="bg-gray-50 overflow-y-auto transition-[width] duration-100" style="width: 75%; min-width: 150px;" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 1: Programming as a Way of Thinking
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Your First Steps into Computational Thinking
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Interactive Learning</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Try It Yourself</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Build Understanding</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Arithmetic Operators -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Working with Numbers: Arithmetic Operators</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python uses special symbols called operators to perform calculations. Think of these as the mathematical tools in your programming toolbox. Each operator tells Python what kind of calculation to perform.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Mathematical Operations</h3>
+            <div class="space-y-4">
+              <div class="border-l-4 border-blue-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Addition (+)</p>
+                <p class="text-gray-600 mb-2">Combines two numbers together</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">25 + 17  # Result: 42</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-green-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Subtraction (-)</p>
+                <p class="text-gray-600 mb-2">Finds the difference between numbers</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">50 - 8  # Result: 42</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-purple-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Multiplication (*)</p>
+                <p class="text-gray-600 mb-2">Multiplies numbers together</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">6 * 7  # Result: 42</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-yellow-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Division (/)</p>
+                <p class="text-gray-600 mb-2">Divides one number by another</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">84 / 2  # Result: 42.0</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded mb-6">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Key Insight:</span> Notice that division always gives you a decimal number (42.0), even when dividing evenly. This is called a floating-point number in Python!
+            </p>
+          </div>
+
+          <div class="bg-white rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Advanced Operators</h3>
+            <div class="space-y-4">
+              <div class="border-l-4 border-red-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Integer Division (//)</p>
+                <p class="text-gray-600 mb-2">Divides and rounds down to a whole number</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">85 // 2  # Result: 42 (not 42.5!)</code>
+                </div>
+              </div>
+
+              <div class="border-l-4 border-pink-500 pl-4">
+                <p class="font-bold text-gray-800 mb-1">Exponentiation (**)</p>
+                <p class="text-gray-600 mb-2">Raises a number to a power</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <code class="text-green-400">2 ** 8  # Result: 256</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Expressions and Order of Operations -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Understanding Expressions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            An expression is any combination of numbers and operators that Python can calculate. Think of it like a math problem that Python solves for you.
+          </p>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Order Matters!</h3>
+            <p class="text-lg text-gray-700 mb-4">
+              Just like in math class, Python follows specific rules about which operations to do first. This is called the order of operations.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <p class="text-gray-400 text-sm mb-2"># Exponents happen first</p>
+              <pre class="text-green-400 font-mono text-sm mb-4"><code>5 + 3 ** 2  # 3**2 is calculated first: 5 + 9 = 14</code></pre>
+
+              <p class="text-gray-400 text-sm mb-2"># Multiplication before addition</p>
+              <pre class="text-green-400 font-mono text-sm mb-4"><code>10 + 4 * 3  # 4*3 is calculated first: 10 + 12 = 22</code></pre>
+
+              <p class="text-gray-400 text-sm mb-2"># Use parentheses to change the order</p>
+              <pre class="text-green-400 font-mono text-sm"><code>(10 + 4) * 3  # Parentheses first: 14 * 3 = 42</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">1️⃣</div>
+              <h4 class="font-bold text-gray-800 mb-2">Parentheses First</h4>
+              <p class="text-gray-700">Calculate anything in ( ) before other operations</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">2️⃣</div>
+              <h4 class="font-bold text-gray-800 mb-2">Exponents Second</h4>
+              <p class="text-gray-700">Powers and roots come next</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-6 text-center">
+              <div class="text-4xl mb-3">3️⃣</div>
+              <h4 class="font-bold text-gray-800 mb-2">Then × and ÷</h4>
+              <p class="text-gray-700">Finally + and - from left to right</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Built-in Functions -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Python's Built-in Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Functions are pre-written pieces of code that perform specific tasks. You call a function by writing its name followed by parentheses containing the value you want to work with.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common Number Functions</h3>
+            <div class="space-y-4">
+              <div class="bg-gray-900 rounded p-4">
+                <p class="text-gray-400 text-sm mb-2"># Round to the nearest whole number</p>
+                <code class="text-green-400">round(7.8)  # Result: 8</code><br>
+                <code class="text-green-400">round(7.2)  # Result: 7</code>
+              </div>
+
+              <div class="bg-gray-900 rounded p-4">
+                <p class="text-gray-400 text-sm mb-2"># Get the absolute value (distance from zero)</p>
+                <code class="text-green-400">abs(-15)  # Result: 15</code><br>
+                <code class="text-green-400">abs(15)   # Result: 15</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-red-800">⚠️ Common Mistake:</span> Function calls MUST include parentheses. Writing <code class="bg-gray-900 text-red-400 px-2 py-1 rounded">abs 15</code> will cause a syntax error. Always use <code class="bg-gray-900 text-green-400 px-2 py-1 rounded">abs(15)</code> instead!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Working with Text -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Strings: Working with Text</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Strings are sequences of characters (letters, numbers, symbols) wrapped in quotation marks. They let Python work with text, not just numbers.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating Strings</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Single quotes work
+'Python is awesome!'
+
+# Double quotes work too
+"Learning to code"
+
+# Use double quotes for apostrophes
+"I'm learning Python today"</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">String Operations</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <p class="text-gray-400 text-sm mb-2"># Concatenation: Joining strings together</p>
+              <pre class="text-green-400 font-mono text-sm mb-4"><code>'Hello, ' + 'world!'  # Result: 'Hello, world!'</code></pre>
+
+              <p class="text-gray-400 text-sm mb-2"># Repetition: Repeating strings</p>
+              <pre class="text-green-400 font-mono text-sm mb-4"><code>'Ha' * 3  # Result: 'HaHaHa'</code></pre>
+
+              <p class="text-gray-400 text-sm mb-2"># Length: Counting characters</p>
+              <pre class="text-green-400 font-mono text-sm"><code>len('Python')  # Result: 6</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Remember:</span> The + operator has different meanings for numbers and strings. With numbers it adds, with strings it joins them together!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Types -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Understanding Data Types</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Every value in Python belongs to a specific category called a type. The three fundamental types you'll work with are integers, floating-point numbers, and strings.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">🔢</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center">int</h4>
+              <p class="text-gray-700 text-center mb-3">Whole numbers without decimals</p>
+              <div class="bg-gray-900 rounded p-2 text-center">
+                <code class="text-green-400">42, -7, 1000</code>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">🎯</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center">float</h4>
+              <p class="text-gray-700 text-center mb-3">Numbers with decimal points</p>
+              <div class="bg-gray-900 rounded p-2 text-center">
+                <code class="text-green-400">3.14, -0.5, 42.0</code>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-6">
+              <div class="text-4xl mb-3 text-center">📝</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-center">str</h4>
+              <p class="text-gray-700 text-center mb-3">Text in quotation marks</p>
+              <div class="bg-gray-900 rounded p-2 text-center">
+                <code class="text-green-400">'Hello', "123"</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checking and Converting Types</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <p class="text-gray-400 text-sm mb-2"># Use type() to check what type a value is</p>
+              <pre class="text-green-400 font-mono text-sm mb-4"><code>type(42)      # Result: &lt;class 'int'&gt;
+type(42.0)    # Result: &lt;class 'float'&gt;
+type('42')    # Result: &lt;class 'str'&gt;</code></pre>
+
+              <p class="text-gray-400 text-sm mb-2"># Convert between types</p>
+              <pre class="text-green-400 font-mono text-sm"><code>int(3.9)      # Result: 3 (rounds down)
+float(42)     # Result: 42.0
+int('100')    # Result: 100</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-red-800">⚠️ Watch Out:</span> Numbers in quotes are strings, not numbers! <code class="bg-gray-900 text-yellow-400 px-2 py-1 rounded">'123'</code> is text, while <code class="bg-gray-900 text-green-400 px-2 py-1 rounded">123</code> is a number. You can't do math with strings unless you convert them first.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Formal vs Natural Languages -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Programming Languages vs Human Languages</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Programming languages like Python are very different from the languages we speak every day. Understanding these differences will help you become a better programmer.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Key Differences</h3>
+            <div class="space-y-6">
+              <div>
+                <h4 class="font-bold text-blue-600 mb-2">Precision vs Ambiguity</h4>
+                <p class="text-gray-700">In English, "I saw her duck" could mean multiple things. In Python, every instruction has exactly one meaning. There's no room for interpretation.</p>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-blue-600 mb-2">Conciseness vs Redundancy</h4>
+                <p class="text-gray-700">We often repeat ourselves when speaking to ensure understanding. Python code is dense and precise—every character matters.</p>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-blue-600 mb-2">Literal vs Figurative</h4>
+                <p class="text-gray-700">If you tell someone "break a leg," they know you're wishing them luck. If you tell Python to break something, it will try to actually break it!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">📚 Learning Tip:</span> Reading code takes practice and patience. Don't read it like a novel—study the structure, check every detail, and take your time. Small mistakes in spelling or punctuation can completely change what a program does!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Ready to Practice?</h2>
+          <p class="text-xl mb-6">Use the Python terminal on the right to try out the concepts you've learned!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3">Try These Exercises:</p>
+            <ul class="space-y-2">
+              <li>• Calculate how many seconds are in one week</li>
+              <li>• Create a string with your name and print its length</li>
+              <li>• Convert the string '456' to an integer and multiply it by 2</li>
+              <li>• Use round() to round 8.7 to the nearest integer</li>
+              <li>• Combine multiple strings using the + operator</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="w-1.5 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors duration-200" id="resizer"></div>
+
+    <div class="flex-1 bg-[#1e1e1e] overflow-y-auto flex flex-col">
+      <div class="font-mono text-[#d4d4d4] p-5 h-full flex flex-col">
+        <div class="text-[#4ec9b0] mb-5 text-2xl font-bold">🐍 Python Practice Terminal</div>
+        
+        <div class="flex-1 flex flex-col gap-5">
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Python Code:</label>
+            <textarea id="code" class="flex-1 bg-[#2d2d2d] text-[#d4d4d4] border border-[#3e3e3e] rounded px-3 py-3 font-mono text-sm resize-none min-h-[200px] focus:outline-none focus:border-[#007acc]" placeholder="# Write your Python code here and click Run!
+# Try the examples from the lesson!
+
+# Example: Try basic math
+print(30 + 12)
+
+# Example: Work with strings
+print('Hello, ' + 'Python!')
+
+# Example: Check types
+print(type(42))"></textarea>
+            <button id="runBtn" class="bg-[#0e639c] text-white border-0 px-5 py-2.5 rounded cursor-pointer text-sm font-bold hover:bg-[#1177bb] transition-colors mt-2.5 disabled:bg-[#555] disabled:cursor-not-allowed" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Output:</label>
+            <div id="output" class="flex-1 bg-[#1e1e1e] border border-[#3e3e3e] rounded px-3 py-3 overflow-y-auto whitespace-pre-wrap text-sm min-h-[200px]"><span class="text-[#4ec9b0] italic">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ JS at the END -->
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="text-[#4ec9b0]">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="text-[#f48771]">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="text-[#f48771]">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="text-[#4ec9b0] italic">⏳ Running...</span>';
+      
+      try {
+        // Capture stdout
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        // Run user code
+        await pyodide.runPythonAsync(code);
+        
+        // Get output
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="text-[#f48771]">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    // Initialize Python on load
+    initPyodide();
+    
+    // Allow Ctrl+Enter to run code
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

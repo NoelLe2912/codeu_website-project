@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 5: Conditionals and Recursion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+</head>
+
+<body class="h-full m-0 flex flex-col overflow-hidden">
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <div class="bg-gray-50 overflow-y-auto transition-[width] duration-100" style="width: 75%; min-width: 150px;" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 5: Conditionals and Recursion
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Making Decisions and Calling Functions Recursively
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">If Statements</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Boolean Logic</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Recursion</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Modulus Operator -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Integer Division and Modulus</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The modulus operator (%) is more useful than it might seem at first. It returns the remainder when one number is divided by another.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Converting Minutes to Hours</h3>
+            <p class="text-gray-700 mb-4">
+              Suppose a movie is 105 minutes long. How many hours and minutes is that?
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>minutes = 105
+
+# Integer division gives whole hours
+hours = minutes // 60      # Result: 1
+
+# Modulus gives remaining minutes
+remainder = minutes % 60   # Result: 45
+
+print(f"{hours} hours and {remainder} minutes")</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl">Checking Divisibility</h4>
+              <p class="text-gray-700 mb-3">If x % y is zero, then x is divisible by y</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">10 % 2  # 0 (divisible)<br>10 % 3  # 1 (not divisible)</code>
+              </div>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">Extracting Digits</h4>
+              <p class="text-gray-700 mb-3">Get the rightmost digits of a number</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">123 % 10   # 3 (last digit)<br>123 % 100  # 23 (last 2 digits)</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Clock Arithmetic</h3>
+            <p class="text-gray-700 mb-4">
+              If an event starts at 11 AM and lasts 3 hours, when does it end?
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>start = 11
+duration = 3
+end = (start + duration) % 12
+# Result: 2 (2 PM)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Boolean Expressions -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Boolean Expressions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A boolean expression is one that evaluates to either True or False. These are fundamental for making decisions in your programs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Comparison Operators</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>x = 5
+y = 7
+
+x == y    # False (equal to)
+x != y    # True (not equal to)
+x > y     # False (greater than)
+x < y     # True (less than)
+x >= y    # False (greater than or equal)
+x <= y    # True (less than or equal)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded mb-6">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-red-800">⚠️ Common Mistake:</span> Don't confuse = (assignment) with == (comparison)!
+            </p>
+            <div class="bg-gray-900 rounded mt-3 p-3">
+              <code class="text-red-400 text-sm">x = 5     # Assigns 5 to x</code><br>
+              <code class="text-green-400 text-sm">x == 5    # Checks if x equals 5</code>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The bool Type</h3>
+            <p class="text-gray-700 mb-4">
+              True and False are special values of type bool:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>type(True)   # <class 'bool'>
+type(False)  # <class 'bool'>
+
+# They're not strings!
+type("True")  # <class 'str'></code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Logical Operators -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Logical Operators</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Logical operators (and, or, not) let you combine boolean expressions to create more complex conditions.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white rounded-lg p-6">
+              <h4 class="font-bold text-blue-800 mb-3 text-xl text-center">and</h4>
+              <p class="text-gray-700 mb-3 text-center">Both conditions must be True</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">x > 0 and x < 10</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">True only if x is between 0 and 10</p>
+            </div>
+
+            <div class="bg-white rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl text-center">or</h4>
+              <p class="text-gray-700 mb-3 text-center">At least one must be True</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">x % 2 == 0 or x % 3 == 0</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">True if divisible by 2 or 3</p>
+            </div>
+
+            <div class="bg-white rounded-lg p-6">
+              <h4 class="font-bold text-purple-800 mb-3 text-xl text-center">not</h4>
+              <p class="text-gray-700 mb-3 text-center">Negates the condition</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">not x > y</code>
+              </div>
+              <p class="text-gray-600 text-sm mt-2 text-center">True if x is NOT greater than y</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Combining Conditions</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Check if a number is in a range
+age = 25
+if age >= 18 and age < 65:
+    print("Working age")
+
+# Check multiple conditions
+score = 85
+if score >= 90 or score < 60:
+    print("Extreme score")
+
+# Negate a condition
+is_raining = False
+if not is_raining:
+    print("Let's go outside!")</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: If Statements -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">If Statements</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Conditional statements let you execute different code based on whether conditions are true or false. This is how programs make decisions.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic If Statement</h3>
+            <p class="text-gray-700 mb-4">
+              The simplest form executes code only if a condition is true:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>x = 10
+
+if x > 0:
+    print('x is positive')
+    print('This runs too!')
+
+# Both lines execute because x > 0 is True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The else Clause</h3>
+            <p class="text-gray-700 mb-4">
+              Use else to specify what happens when the condition is false:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>x = 7
+
+if x % 2 == 0:
+    print('x is even')
+else:
+    print('x is odd')
+
+# Output: x is odd</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Chained Conditionals</h3>
+            <p class="text-gray-700 mb-4">
+              Use elif (else if) to check multiple conditions:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>x = 5
+y = 7
+
+if x < y:
+    print('x is less than y')
+elif x > y:
+    print('x is greater than y')
+else:
+    print('x and y are equal')
+
+# Output: x is less than y</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Point:</span> Only ONE branch executes. Python checks conditions in order and runs the first one that's true, then skips the rest.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Nested Conditionals -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Nested Conditionals</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            You can put if statements inside other if statements, but this can get confusing. There are usually better alternatives.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">❌ Nested (Harder to Read)</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-red-400 font-mono text-xs"><code>if x == y:
+    print('equal')
+else:
+    if x < y:
+        print('less')
+    else:
+        print('greater')</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Chained (Easier to Read)</h4>
+              <div class="bg-gray-900 rounded p-4">
+                <pre class="text-green-400 font-mono text-xs"><code>if x == y:
+    print('equal')
+elif x < y:
+    print('less')
+else:
+    print('greater')</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using Logical Operators</h3>
+            <p class="text-gray-700 mb-4">
+              You can often simplify nested conditionals with logical operators:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-red-50 rounded p-4">
+                <p class="font-bold text-red-800 mb-2">Nested:</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-red-400 font-mono text-xs"><code>if 0 < x:
+    if x < 10:
+        print('single digit')</code></pre>
+                </div>
+              </div>
+
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Better:</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-green-400 font-mono text-xs"><code>if 0 < x < 10:
+    print('single digit')</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Recursion -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Recursion: Functions Calling Themselves</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A function can call itself! This is called recursion, and it's one of the most powerful ideas in programming. It might seem strange at first, but it's incredibly useful for certain problems.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Simple Example: Countdown</h3>
+            <p class="text-gray-700 mb-4">
+              Here's a function that counts down from n to 0:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def countdown(n):
+    if n <= 0:
+        print('Blastoff!')
+    else:
+        print(n)
+        countdown(n - 1)  # Function calls itself!
+
+countdown(3)
+# Output:
+# 3
+# 2
+# 1
+# Blastoff!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How It Works</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> countdown(3) prints 3, then calls countdown(2)</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> countdown(2) prints 2, then calls countdown(1)</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> countdown(1) prints 1, then calls countdown(0)</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> countdown(0) prints "Blastoff!" and returns</p>
+              <p><span class="font-bold text-blue-600">Step 5:</span> Each function returns in reverse order</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Another Example: Print N Times</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def print_n_times(message, n):
+    if n > 0:
+        print(message)
+        print_n_times(message, n - 1)
+
+print_n_times('Hello!', 4)
+# Output:
+# Hello!
+# Hello!
+# Hello!
+# Hello!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🔑 Key Concept:</span> Every recursive function needs a BASE CASE (a condition that stops the recursion). Without it, the function will call itself forever!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Stack Diagrams for Recursion -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Understanding Recursive Calls</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Each time a function is called, Python creates a new frame on the stack. With recursion, you get multiple frames for the same function with different parameter values.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Stack Diagram for countdown(3)</h3>
+            <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-8">
+              <div class="bg-white rounded-lg p-6 space-y-4">
+                <div class="border-4 border-green-500 rounded p-4">
+                  <p class="font-bold text-green-700 mb-2">countdown</p>
+                  <p class="text-sm">n → 0 (BASE CASE)</p>
+                </div>
+                <div class="border-4 border-blue-500 rounded p-4">
+                  <p class="font-bold text-blue-700 mb-2">countdown</p>
+                  <p class="text-sm">n → 1</p>
+                </div>
+                <div class="border-4 border-purple-500 rounded p-4">
+                  <p class="font-bold text-purple-700 mb-2">countdown</p>
+                  <p class="text-sm">n → 2</p>
+                </div>
+                <div class="border-4 border-pink-500 rounded p-4">
+                  <p class="font-bold text-pink-700 mb-2">countdown</p>
+                  <p class="text-sm">n → 3</p>
+                </div>
+                <div class="border-4 border-gray-500 rounded p-4">
+                  <p class="font-bold text-gray-700 mb-2">__main__</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Base Case</h3>
+            <p class="text-gray-700 mb-4">
+              The bottom frame where n=0 is the base case. It doesn't make another recursive call, so the stack stops growing and functions start returning.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Infinite Recursion -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Infinite Recursion</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            If a recursive function never reaches its base case, it will keep calling itself forever until Python runs out of stack space. This is called infinite recursion.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example of Infinite Recursion</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>def recurse():
+    recurse()  # No base case!
+
+# This will crash:
+# recurse()
+# RecursionError: maximum recursion depth exceeded</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common Mistake: Wrong Base Case</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-yellow-400 font-mono text-sm"><code># This looks OK but has a bug!
+def countdown_by_two(n):
+    if n == 0:
+        print('Blastoff!')
+    else:
+        print(n)
+        countdown_by_two(n - 2)
+
+# Works fine:
+countdown_by_two(6)  # 6, 4, 2, Blastoff!
+
+# But this causes infinite recursion:
+# countdown_by_two(5)  # 5, 3, 1, -1, -3, ...</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700 mb-3">
+              <span class="font-bold text-red-800">🐛 Debugging Tip:</span> Always check:
+            </p>
+            <ul class="text-gray-700 space-y-2">
+              <li>• Does your function have a base case?</li>
+              <li>• Does the base case actually stop the recursion?</li>
+              <li>• Will you always reach the base case?</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 9: Keyboard Input -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Getting Input from Users</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The input() function lets your programs interact with users by asking for information. Note: In the terminal on this page, input() won't work, but it works in regular Python!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Input</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Ask for user's name
+name = input('What is your name? ')
+print('Hello,', name)
+
+# Ask for a number (returns a string!)
+age = input('How old are you? ')
+age = int(age)  # Convert to integer
+print('Next year you will be', age + 1)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">⚠️ Important:</span> input() always returns a string, even if the user types a number. Use int() or float() to convert when needed.
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Try these challenges to master conditionals and recursion!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write a function is_triangle(a, b, c) that checks if three lengths can form a triangle</li>
+              <li>• Create a function that converts time in seconds to days, hours, minutes, and seconds</li>
+              <li>• Write a recursive function factorial(n) that calculates n! = n × (n-1) × ... × 1</li>
+              <li>• Create a function that checks if a year is a leap year (divisible by 4, except centuries unless divisible by 400)</li>
+              <li>• Write a recursive function sum_digits(n) that adds up all digits in a number</li>
+              <li>• Create a function grade_calculator(score) that returns letter grades (A, B, C, D, F)</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Additional Examples Section -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Practical Examples</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Let's look at some practical applications of conditionals and recursion.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Factorial Function</h3>
+            <p class="text-gray-700 mb-4">
+              The factorial of n (written n!) is n × (n-1) × (n-2) × ... × 1. This is perfect for recursion:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def factorial(n):
+    """Calculate n! recursively."""
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+# Test it
+print(factorial(5))  # 5 × 4 × 3 × 2 × 1 = 120
+print(factorial(3))  # 3 × 2 × 1 = 6</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Grade Calculator</h3>
+            <p class="text-gray-700 mb-4">
+              A practical use of chained conditionals:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def get_grade(score):
+    """Convert numeric score to letter grade."""
+    if score >= 90:
+        return 'A'
+    elif score >= 80:
+        return 'B'
+    elif score >= 70:
+        return 'C'
+    elif score >= 60:
+        return 'D'
+    else:
+        return 'F'
+
+print(get_grade(85))  # B
+print(get_grade(92))  # A</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Fibonacci Numbers</h3>
+            <p class="text-gray-700 mb-4">
+              The Fibonacci sequence: each number is the sum of the previous two:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def fibonacci(n):
+    """Return the nth Fibonacci number."""
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+# First 8 Fibonacci numbers
+for i in range(8):
+    print(fibonacci(i), end=' ')
+# Output: 0 1 1 2 3 5 8 13</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Debugging Section -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Tips</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Conditionals and recursion can introduce subtle bugs. Here's how to catch them.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-yellow-50 rounded-lg p-6">
+              <h3 class="text-xl font-bold text-yellow-800 mb-3">Common Conditional Errors</h3>
+              <ul class="text-gray-700 space-y-2 text-sm">
+                <li>• Using = instead of ==</li>
+                <li>• Forgetting the colon after if/elif/else</li>
+                <li>• Wrong indentation in blocks</li>
+                <li>• Checking conditions in wrong order</li>
+                <li>• Forgetting parentheses in complex conditions</li>
+              </ul>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h3 class="text-xl font-bold text-red-800 mb-3">Common Recursion Errors</h3>
+              <ul class="text-gray-700 space-y-2 text-sm">
+                <li>• Missing base case</li>
+                <li>• Base case never reached</li>
+                <li>• Not moving toward base case</li>
+                <li>• Forgetting to return value</li>
+                <li>• Too many recursive calls (stack overflow)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mt-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Testing Recursive Functions</h3>
+            <p class="text-gray-700 mb-4">
+              Always test with:
+            </p>
+            <ul class="text-gray-700 space-y-2">
+              <li>• <span class="font-bold">Base case:</span> Does it work when it should stop?</li>
+              <li>• <span class="font-bold">Small values:</span> Does it work for n=1, n=2?</li>
+              <li>• <span class="font-bold">Edge cases:</span> What about n=0 or negative numbers?</li>
+              <li>• <span class="font-bold">Typical cases:</span> Does it work for normal inputs?</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="w-1.5 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors duration-200" id="resizer"></div>
+
+    <div class="flex-1 bg-[#1e1e1e] overflow-y-auto flex flex-col">
+      <div class="font-mono text-[#d4d4d4] p-5 h-full flex flex-col">
+        <div class="text-[#4ec9b0] mb-5 text-2xl font-bold">🐍 Python Practice Terminal</div>
+        
+        <div class="flex-1 flex flex-col gap-5">
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Python Code:</label>
+            <textarea id="code" class="flex-1 bg-[#2d2d2d] text-[#d4d4d4] border border-[#3e3e3e] rounded px-3 py-3 font-mono text-sm resize-none min-h-[200px] focus:outline-none focus:border-[#007acc]" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 5!
+
+# Example: If statement
+x = 10
+if x > 0:
+    print('x is positive')
+
+# Example: Chained conditional
+score = 85
+if score >= 90:
+    print('A')
+elif score >= 80:
+    print('B')
+else:
+    print('C')
+
+# Example: Recursion
+def countdown(n):
+    if n <= 0:
+        print('Blastoff!')
+    else:
+        print(n)
+        countdown(n - 1)
+
+countdown(5)"></textarea>
+            <button id="runBtn" class="bg-[#0e639c] text-white border-0 px-5 py-2.5 rounded cursor-pointer text-sm font-bold hover:bg-[#1177bb] transition-colors mt-2.5 disabled:bg-[#555] disabled:cursor-not-allowed" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Output:</label>
+            <div id="output" class="flex-1 bg-[#1e1e1e] border border-[#3e3e3e] rounded px-3 py-3 overflow-y-auto whitespace-pre-wrap text-sm min-h-[200px]"><span class="text-[#4ec9b0] italic">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="text-[#4ec9b0]">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="text-[#f48771]">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="text-[#f48771]">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="text-[#4ec9b0] italic">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="text-[#f48771]">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

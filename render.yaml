@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: codeu-backend
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SENDER_EMAIL
+        sync: false
+      - key: PORT
+        value: 4000
+
+  - type: web
+    name: codeu-frontend
+    runtime: node
+    rootDir: client
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_BACKEND_URL
+        sync: false

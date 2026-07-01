@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 7: Iteration and Search</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 7: Iteration and Search
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Looping Through Data and Finding What You Need
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Loop Strings</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Read Files</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Linear Search</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Loops and Strings -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Looping Through Strings</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            In Chapter 3, you learned to use for loops with the range function. Now you'll discover that you can loop through the characters in a string just as easily! This opens up powerful possibilities for text processing.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic String Loop</h3>
+            <p class="text-gray-700 mb-4">
+              You can use a for loop to access each character in a string, one at a time:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for letter in 'Gadsby':
+    print(letter, end=' ')
+
+# Output: G a d s b y</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Loop Variable</h3>
+            <p class="text-gray-700 mb-4">
+              The variable defined in a for loop (like letter above) is called the loop variable. It's good practice to give it a descriptive name that makes your code easier to understand.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Less clear
+for i in 'Python':
+    print(i)
+
+# More clear
+for character in 'Python':
+    print(character)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checking for Specific Letters</h3>
+            <p class="text-gray-700 mb-4">
+              By combining loops with if statements, you can search for specific characters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for letter in "Gadsby":
+    if letter == 'E' or letter == 'e':
+        print('This word has an "e"')</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Fun Fact:</span> In 1939, Ernest Vincent Wright published a 50,000-word novel called "Gadsby" without using the letter "e" even once—quite a challenge since "e" is the most common letter in English!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Functions for Letter Checking -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating a Letter Checker Function</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Let's turn our letter-checking code into a reusable function. We'll start simple and gradually improve it.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Step 1: Basic Function</h3>
+            <p class="text-gray-700 mb-4">
+              First, let's encapsulate the loop in a function:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def has_e():
+    for letter in "Gadsby":
+        if letter == 'E' or letter == 'e':
+            print('This word has an "e"')</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Step 2: Return a Value</h3>
+            <p class="text-gray-700 mb-4">
+              Let's make it a pure function that returns True or False:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def has_e():
+    for letter in "Gadsby":
+        if letter == 'E' or letter == 'e':
+            return True
+    return False</code></pre>
+            </div>
+            <p class="text-gray-700 mt-4">
+              Notice the two return statements: one inside the loop (when we find an "e") and one outside (when we don't find any).
+            </p>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Step 3: Add a Parameter</h3>
+            <p class="text-gray-700 mb-4">
+              Now let's make it work with any word by adding a parameter:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def has_e(word):
+    for letter in word:
+        if letter == 'E' or letter == 'e':
+            return True
+    return False
+
+# Test it
+has_e('Gadsby')  # Returns: False
+has_e('Emma')    # Returns: True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🎯 Key Pattern:</span> When searching for something in a sequence, return True as soon as you find it. Only return False after checking everything.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Reading Files -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Reading Word Lists from Files</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            To analyze many words, we need to read them from a file. Python makes this easy with file objects and methods.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Opening Files</h3>
+            <p class="text-gray-700 mb-4">
+              Use the built-in open function to create a file object:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>file_object = open('words.txt')
+
+# Read one line
+file_object.readline()
+# Returns: 'aa\n'</code></pre>
+            </div>
+            <p class="text-gray-700 mt-4">
+              The \n represents a newline character that separates words in the file.
+            </p>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Methods vs Functions</h3>
+            <p class="text-gray-700 mb-4">
+              readline is a method—a function associated with an object. You call it using the dot operator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Method syntax: object.method()
+line = file_object.readline()
+
+# Function syntax: function(argument)
+length = len(line)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Cleaning Up Lines</h3>
+            <p class="text-gray-700 mb-4">
+              Use the strip method to remove whitespace (spaces, tabs, newlines):
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>line = file_object.readline()
+word = line.strip()
+
+# Before strip: 'aah\n'
+# After strip:  'aah'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Looping Through All Lines</h3>
+            <p class="text-gray-700 mb-4">
+              You can use a file object directly in a for loop to process every line:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for line in open('words.txt'):
+    word = line.strip()
+    print(word)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Updating Variables -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Updating Variables in Loops</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Variables can be reassigned to new values. This is especially useful for keeping track of information as you loop through data.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Variable Updates</h3>
+            <p class="text-gray-700 mb-4">
+              You can assign a new value to a variable that already exists:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>x = 5
+x
+# 5
+
+x = 7
+x
+# 7
+
+x = x + 1
+x
+# 8</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-blue-50 rounded-lg p-6">
+              <h4 class="font-bold text-gray-800 mb-3 text-xl">Initialize First</h4>
+              <p class="text-gray-700 mb-3">Before updating, create the variable:</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">z = 0<br>z = z + 1</code>
+              </div>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">Common Error</h4>
+              <p class="text-gray-700 mb-3">Don't update before initializing:</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-red-400 text-sm">z = z + 1<br># NameError!</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Augmented Assignment Operators</h3>
+            <p class="text-gray-700 mb-4">
+              Python provides shortcuts for common update operations:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>z = 0
+z += 1    # Same as: z = z + 1
+z += 2    # Same as: z = z + 2
+z -= 1    # Same as: z = z - 1
+z *= 3    # Same as: z = z * 3</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">📊 Terminology:</span> Increasing a variable's value is called an increment. Decreasing it is called a decrement.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Looping and Counting -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Counting with Loops</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A counter is a variable used to count how many times something happens. Counters are essential for analyzing data in loops.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Counting All Words</h3>
+            <p class="text-gray-700 mb-4">
+              Let's count how many words are in our word list:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>total = 0
+
+for line in open('words.txt'):
+    word = line.strip()
+    total += 1
+
+total
+# 113783</code></pre>
+            </div>
+            <p class="text-gray-700 mt-4">
+              The variable total is a counter that starts at 0 and increases by 1 for each word.
+            </p>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Counting Words with "e"</h3>
+            <p class="text-gray-700 mb-4">
+              We can use multiple counters to track different things:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>total = 0
+count = 0
+
+for line in open('words.txt'):
+    word = line.strip()
+    total = total + 1
+    if has_e(word):
+        count += 1
+
+# How many words have "e"?
+count
+# 76162
+
+# As a percentage
+count / total * 100
+# 66.94%</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">📈 Insight:</span> About two-thirds of English words contain the letter "e"—no wonder it was so hard to write a novel without it!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: The in Operator -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Simplifying with the in Operator</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python provides a powerful in operator that checks whether a character (or substring) appears in a string. This can greatly simplify our code.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic in Operator Usage</h3>
+            <p class="text-gray-700 mb-4">
+              The in operator returns True if the character is found, False otherwise:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>word = 'Gadsby'
+'e' in word
+# False
+
+'a' in word
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Simplifying has_e</h3>
+            <p class="text-gray-700 mb-4">
+              We can rewrite has_e using the in operator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Version 1: Using in operator
+def has_e(word):
+    if 'E' in word or 'e' in word:
+        return True
+    else:
+        return False
+
+# Version 2: Even simpler!
+def has_e(word):
+    return 'E' in word or 'e' in word</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using the lower Method</h3>
+            <p class="text-gray-700 mb-4">
+              The lower method converts all letters to lowercase, making our function even cleaner:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>word = 'Gadsby'
+word.lower()
+# 'gadsby'
+
+# Simplest version of has_e
+def has_e(word):
+    return 'e' in word.lower()
+
+has_e('Gadsby')  # False
+has_e('Emma')    # True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">⚡ Important:</span> The lower method creates a new string—it doesn't modify the original. The value of word remains 'Gadsby', not 'gadsby'.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Linear Search Pattern -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">The Linear Search Pattern</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Linear search is a fundamental programming pattern. It loops through a sequence and checks each element until it finds what it's looking for—or reaches the end.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating a General Search Function</h3>
+            <p class="text-gray-700 mb-4">
+              Let's create uses_any, which checks if a word uses any of a given set of letters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def uses_any(word, letters):
+    for letter in word.lower():
+        if letter in letters.lower():
+            return True
+    return False
+
+uses_any('banana', 'aeiou')  # True
+uses_any('apple', 'xyz')     # False
+uses_any('Banana', 'AEIOU')  # True (case-insensitive)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How Linear Search Works</h3>
+            <div class="space-y-4 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> Loop through each element in the sequence</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> Check if the current element matches what you're looking for</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> If it matches, return True immediately</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> If you finish the loop without finding it, return False</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-green-100 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Correct Pattern</h4>
+              <div class="bg-gray-900 rounded p-3">
+                <pre class="text-green-400 text-sm"><code>for item in sequence:
+    if condition:
+        return True
+return False</code></pre>
+              </div>
+            </div>
+
+            <div class="bg-red-100 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">✗ Common Mistake</h4>
+              <div class="bg-gray-900 rounded p-3">
+                <pre class="text-red-400 text-sm"><code>for item in sequence:
+    if condition:
+        return True
+    else:
+        return False</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚠️ Warning:</span> Don't put both return statements inside the loop! The second return should only happen after checking all elements.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Doctest -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Testing with Doctest</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Docstrings can do more than document your functions—they can also test them! This helps ensure your code works correctly.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Writing Doctests</h3>
+            <p class="text-gray-700 mb-4">
+              Include test examples in your docstring using >>> prompts:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def uses_any(word, letters):
+    """Checks if a word uses any of a list of letters.
+    
+    >>> uses_any('banana', 'aeiou')
+    True
+    >>> uses_any('apple', 'xyz')
+    False
+    """
+    for letter in word.lower():
+        if letter in letters.lower():
+            return True
+    return False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Running Doctests</h3>
+            <p class="text-gray-700 mb-4">
+              Use this helper function to run the tests in a docstring:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>from doctest import run_docstring_examples
+
+def run_doctests(func):
+    run_docstring_examples(func, globals(), name=func.__name__)
+
+# Test the function
+run_doctests(uses_any)
+# If all tests pass, no output appears</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">When Tests Fail</h3>
+            <p class="text-gray-700 mb-4">
+              If a test fails, you'll see detailed output showing what went wrong:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>**********************************************************************
+File "__main__", line 4, in uses_any_incorrect
+Failed example:
+    uses_any_incorrect('banana', 'aeiou')
+Expected:
+    True
+Got:
+    False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">✅ Best Practice:</span> Write doctests for every function. They serve as both documentation and automated tests!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: More Search Functions -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Building More Search Tools</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Now that you understand the linear search pattern, you can create many useful variations. Here are some examples you'll build in the exercises.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">uses_none: Avoiding Letters</h3>
+            <p class="text-gray-700 mb-4">
+              Check if a word avoids all forbidden letters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def uses_none(word, forbidden):
+    """Checks whether a word avoids forbidden letters.
+    
+    >>> uses_none('banana', 'xyz')
+    True
+    >>> uses_none('apple', 'efg')
+    False
+    """
+    # Your implementation here
+    return None</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">uses_only: Restricted Letters</h3>
+            <p class="text-gray-700 mb-4">
+              Check if a word uses only the available letters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def uses_only(word, available):
+    """Checks whether a word uses only available letters.
+    
+    >>> uses_only('banana', 'ban')
+    True
+    >>> uses_only('apple', 'apl')
+    False
+    """
+    # Your implementation here
+    return None</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">uses_all: Required Letters</h3>
+            <p class="text-gray-700 mb-4">
+              Check if a word contains all required letters:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def uses_all(word, required):
+    """Checks whether a word uses all required letters.
+    
+    >>> uses_all('banana', 'ban')
+    True
+    >>> uses_all('apple', 'api')
+    False
+    """
+    # Your implementation here
+    return None</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🔗 Reusability Tip:</span> You can often use one function to implement another! For example, uses_none could use uses_any internally.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 10: Spelling Bee Puzzle -->
+        <section class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Real-World Application: Spelling Bee</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The New York Times Spelling Bee is a word puzzle that uses all the concepts you've learned. Players must form words using seven letters, with one letter required.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Rules</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Words must have at least four letters</p>
+              <p>• Words must use only the seven available letters</p>
+              <p>• Words must include the required letter</p>
+              <p>• Letters can be repeated</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example Puzzle</h3>
+            <p class="text-gray-700 mb-4">
+              Available letters: A, C, D, L, O, R, T (with R required)
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">✓ Valid Words</p>
+                <p class="text-gray-700">• "color" (uses R, 5+ letters)</p>
+                <p class="text-gray-700">• "ratatat" (uses R, repeats allowed)</p>
+                <p class="text-gray-700">• "doctor" (uses R, 6 letters)</p>
+              </div>
+              <div class="bg-red-50 rounded p-4">
+                <p class="font-bold text-red-800 mb-2">✗ Invalid Words</p>
+                <p class="text-gray-700">• "told" (no R)</p>
+                <p class="text-gray-700">• "rat" (only 3 letters)</p>
+                <p class="text-gray-700">• "bee" (uses E, not available)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Scoring System</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Four-letter words: 1 point each</p>
+              <p>• Longer words: 1 point per letter</p>
+              <p>• Pangrams (use all 7 letters): 7 bonus points!</p>
+            </div>
+            <div class="bg-gray-900 rounded-lg p-4 mt-4">
+              <pre class="text-green-400 font-mono text-sm"><code># Scoring examples
+"card"     → 1 point   (4-letter word)
+"color"    → 5 points  (5 letters)
+"cartload" → 15 points (8 letters + 7 bonus for pangram)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🎯 Challenge:</span> In the exercises, you'll write functions to check if words are valid and calculate their scores!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master iteration and search with these challenges!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Write uses_none that checks if a word avoids forbidden letters</li>
+              <li>• Create uses_only to verify a word uses only allowed letters</li>
+              <li>• Implement uses_all to ensure all required letters are present</li>
+              <li>• Build check_word to validate Spelling Bee words</li>
+              <li>• Write word_score to calculate points for valid words</li>
+              <li>• Reuse functions: write uses_none using uses_any</li>
+              <li>• Reuse functions: write uses_all using uses_only</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 7!
+
+# Example: Loop through a string
+for letter in 'Python':
+    print(letter, end=' ')
+print()
+
+# Example: Check for letter 'e'
+def has_e(word):
+    return 'e' in word.lower()
+
+print(has_e('Gadsby'))  # False
+print(has_e('Emma'))    # True
+
+# Example: Count with a loop
+count = 0
+for i in range(5):
+    count += 1
+print('Total count:', count)
+
+# Example: Linear search
+def uses_any(word, letters):
+    for letter in word.lower():
+        if letter in letters.lower():
+            return True
+    return False
+
+print(uses_any('banana', 'aeiou'))  # True
+print(uses_any('apple', 'xyz'))     # False"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

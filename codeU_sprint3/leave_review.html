@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Review with Profile Identification</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --star-color: #fbbf24;
+            --text-gray: #4b5563;
+            --bg-gray: #f3f4f6;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Review Form Card --- */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        /* --- User Profile Header --- */
+        .user-identity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #ddd;
+        }
+
+        .user-name { font-weight: 700; font-size: 1.1rem; }
+
+        /* --- Star Rating --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 2rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: var(--star-color);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            min-height: 100px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        button#submitBtn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button#submitBtn:hover { opacity: 0.9; }
+
+        /* --- Review Feed --- */
+        .review-feed { margin-top: 3rem; }
+        .review-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .review-stars { color: var(--star-color); font-size: 0.9rem; }
+        .review-text { color: var(--text-gray); line-height: 1.5; }
+
+        /* Success Message Overlay */
+        #successToast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #059669;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="user-identity">
+            <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=2563eb&color=fff" alt="Profile" class="profile-pic">
+            <div>
+                <span class="user-name">Alex Doe</span>
+                <div style="font-size: 0.8rem; color: gray;">Student (Current User)</div>
+            </div>
+        </div>
+
+        <form id="reviewForm">
+            <div class="star-rating">
+                <input type="radio" id="s5" name="rating" value="5"><label for="s5">★</label>
+                <input type="radio" id="s4" name="rating" value="4"><label for="s4">★</label>
+                <input type="radio" id="s3" name="rating" value="3"><label for="s3">★</label>
+                <input type="radio" id="s2" name="rating" value="2"><label for="s2">★</label>
+                <input type="radio" id="s1" name="rating" value="1"><label for="s1">★</label>
+            </div>
+
+            <textarea id="reviewText" maxlength="500" placeholder="Describe your experience..." required></textarea>
+            <button type="submit" id="submitBtn">Post Review</button>
+        </form>
+    </div>
+
+    <div class="review-feed">
+        <h3 style="margin-bottom: 1.5rem;">Recent Student Reviews</h3>
+        <div id="feedContainer">
+            <div class="review-item">
+                <div class="review-header">
+                    <img src="https://ui-avatars.com/api/?name=Sarah+Smith&background=db2777&color=fff" class="profile-pic" style="width: 35px; height: 35px;">
+                    <div>
+                        <div class="user-name" style="font-size: 0.9rem;">Sarah Smith</div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <p class="review-text">This course was a game changer for my career. The projects were challenging but very rewarding!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successToast">Success! Your review has been posted.</div>
+
+<script>
+    const form = document.getElementById('reviewForm');
+    const feed = document.getElementById('feedContainer');
+    const toast = document.getElementById('successToast');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const rating = document.querySelector('input[name="rating"]:checked');
+        const text = document.getElementById('reviewText').value;
+
+        if (!rating) {
+            alert("Please select a star rating!");
+            return;
+        }
+
+        // 1. Create the star string
+        let stars = "".padStart(rating.value, "★").padEnd(5, "☆");
+
+        // 2. Create the New Review Element
+        const newReview = document.createElement('div');
+        newReview.className = 'review-item';
+        newReview.innerHTML = `
+            <div class="review-header">
+                <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=2563eb&color=fff" class="profile-pic" style="width: 35px; height: 35px;">
+                <div>
+                    <div class="user-name" style="font-size: 0.9rem;">Alex Doe (You)</div>
+                    <div class="review-stars">${stars}</div>
+                </div>
+            </div>
+            <p class="review-text">${text}</p>
+        `;
+
+        // 3. Add to Feed (at the top)
+        feed.prepend(newReview);
+
+        // 4. Reset & Notify
+        form.reset();
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    });
+</script>
+
+</body>
+</html>

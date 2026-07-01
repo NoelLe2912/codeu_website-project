@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 12: Text Analysis and Generation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 12: Text Analysis and Generation
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Analyzing Word Patterns and Generating New Text
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Word Frequency</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Bigrams</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Markov Chains</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Counting Unique Words -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Counting Unique Words</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Text analysis begins with understanding what words appear in a text and how often. We'll use dictionaries to track unique words and their frequencies—the foundation of natural language processing.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic Word Counting</h3>
+            <p class="text-gray-700 mb-4">
+              Use a dictionary to track unique words:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>text = "the quick brown fox jumps over the lazy dog"
+
+unique_words = {}
+for word in text.split():
+    unique_words[word] = 1
+
+len(unique_words)
+# 8 (unique words)
+
+# The words are the keys
+list(unique_words.keys())
+# ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'lazy', 'dog']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Finding Longest Words</h3>
+            <p class="text-gray-700 mb-4">
+              Sort words by length using a key function:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Sort by length
+sorted(unique_words, key=len)
+# ['the', 'fox', 'dog', 'over', 'lazy', 'quick', 'brown', 'jumps']
+
+# Get the 3 longest words
+sorted(unique_words, key=len)[-3:]
+# ['quick', 'brown', 'jumps']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Insight:</span> Using dictionary keys to store unique items is a common pattern. The values don't matter—we're just using the dictionary to track what we've seen.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Handling Punctuation -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Cleaning Text Data</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Real text contains punctuation, capitalization, and other noise. We need to clean it before analysis to get accurate results.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Removing Punctuation</h3>
+            <p class="text-gray-700 mb-4">
+              Use strip() to remove punctuation from word boundaries:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>punctuation = '.!?,;:\'"'
+
+def clean_word(word):
+    return word.strip(punctuation).lower()
+
+# Test it
+clean_word('"Hello!"')
+# 'hello'
+
+clean_word('world.')
+# 'world'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Processing Complete Text</h3>
+            <p class="text-gray-700 mb-4">
+              Apply cleaning to all words in a text:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>text = "Hello, world! How are you? I'm fine, thanks."
+
+unique_words = {}
+for word in text.split():
+    word = clean_word(word)
+    if word:  # Skip empty strings
+        unique_words[word] = 1
+
+list(unique_words.keys())
+# ['hello', 'world', 'how', 'are', 'you', "i'm", 'fine', 'thanks']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🧹 Important:</span> Always clean and normalize text before analysis. Convert to lowercase and remove punctuation for consistent results.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: Word Frequencies -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Counting Word Frequencies</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Instead of just tracking unique words, we can count how many times each word appears. This reveals patterns about which words are most important or common.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Building a Word Counter</h3>
+            <p class="text-gray-700 mb-4">
+              Count occurrences using a dictionary:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>text = "the cat in the hat sat on the mat"
+
+word_counter = {}
+for word in text.split():
+    if word not in word_counter:
+        word_counter[word] = 1
+    else:
+        word_counter[word] += 1
+
+word_counter
+# {'the': 3, 'cat': 1, 'in': 1, 'hat': 1, 'sat': 1, 'on': 1, 'mat': 1}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Finding Most Common Words</h3>
+            <p class="text-gray-700 mb-4">
+              Sort by frequency to find the most common words:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def second_element(t):
+    return t[1]
+
+# Sort items by frequency
+items = sorted(word_counter.items(), 
+               key=second_element, 
+               reverse=True)
+
+# Print top 3
+for word, freq in items[:3]:
+    print(freq, word)
+
+# Output:
+# 3 the
+# 1 cat
+# 1 in</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">📊 Pattern:</span> This frequency counting pattern is fundamental to text analysis, search engines, and recommendation systems!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Optional Parameters -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Functions with Optional Parameters</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Optional parameters let you provide default values while allowing users to override them when needed. This makes functions more flexible and easier to use.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Defining Optional Parameters</h3>
+            <p class="text-gray-700 mb-4">
+              Use = in the parameter list to set default values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def print_most_common(word_counter, num=5):
+    items = sorted(word_counter.items(), 
+                   key=lambda t: t[1], 
+                   reverse=True)
+    
+    for word, freq in items[:num]:
+        print(freq, word)
+
+# Use default (5)
+print_most_common(word_counter)
+
+# Override with 3
+print_most_common(word_counter, 3)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Rules for Optional Parameters</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Required parameters must come first</p>
+              <p>• Optional parameters follow required ones</p>
+              <p>• Default values are assigned during function definition</p>
+              <p>• Callers can override defaults by providing arguments</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">✨ Best Practice:</span> Use optional parameters to make common use cases simple while keeping flexibility for advanced users.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Dictionary Subtraction -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Dictionary Subtraction</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Sometimes you need to find elements in one set that aren't in another. Dictionary subtraction lets you compare two dictionaries and find the differences.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Subtract Function</h3>
+            <p class="text-gray-700 mb-4">
+              Find keys in d1 that are not in d2:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def subtract(d1, d2):
+    res = {}
+    for key in d1:
+        if key not in d2:
+            res[key] = d1[key]
+    return res
+
+# Example: spell checking
+book_words = {'the': 100, 'cat': 5, 'happyness': 1}
+valid_words = {'the': 1, 'cat': 1, 'happiness': 1}
+
+misspelled = subtract(book_words, valid_words)
+misspelled
+# {'happyness': 1}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Finding Rare Words</h3>
+            <p class="text-gray-700 mb-4">
+              Filter words that appear only once:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>singletons = []
+for word, freq in word_counter.items():
+    if freq == 1:
+        singletons.append(word)
+
+print(singletons)
+# ['cat', 'in', 'hat', 'sat', 'on', 'mat']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🎯 Use Case:</span> Dictionary subtraction is perfect for spell-checking, finding unique items, or comparing datasets.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Bigrams -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Analyzing Word Pairs (Bigrams)</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A bigram is a sequence of two consecutive words. Analyzing bigrams reveals patterns about which words commonly appear together—the foundation of predictive text and language models.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What Are Bigrams?</h3>
+            <p class="text-gray-700 mb-4">
+              From the text "the cat sat", we get these bigrams:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• ("the", "cat")</p>
+              <p>• ("cat", "sat")</p>
+            </div>
+            <p class="text-gray-700 mt-4">
+              Sequences of three words are called trigrams, and sequences of n words are called n-grams.
+            </p>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Counting Bigrams</h3>
+            <p class="text-gray-700 mb-4">
+              Use a sliding window to extract consecutive word pairs:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>text = "the cat in the hat"
+words = text.split()
+
+bigram_counter = {}
+window = []
+
+for word in words:
+    window.append(word)
+    
+    if len(window) == 2:
+        key = tuple(window)
+        if key not in bigram_counter:
+            bigram_counter[key] = 1
+        else:
+            bigram_counter[key] += 1
+        window.pop(0)
+
+bigram_counter
+# {('the', 'cat'): 1, ('cat', 'in'): 1, 
+#  ('in', 'the'): 1, ('the', 'hat'): 1}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Most Common Bigrams</h3>
+            <p class="text-gray-700 mb-4">
+              Find frequently occurring word pairs:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def second_element(t):
+    return t[1]
+
+items = sorted(bigram_counter.items(), 
+               key=second_element, 
+               reverse=True)
+
+for bigram, freq in items[:3]:
+    print(freq, bigram)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Foundation:</span> Bigrams are the building blocks of language models. Modern AI systems like ChatGPT use similar (but more sophisticated) techniques!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 7: Markov Analysis -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Markov Chain Analysis</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Markov analysis tracks which words can follow each word. This creates a map of possible word sequences that we can use to generate new, similar text.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Building a Successor Map</h3>
+            <p class="text-gray-700 mb-4">
+              Map each word to the words that can follow it:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>text = "the cat sat on the mat the cat ran"
+words = text.split()
+
+successor_map = {}
+window = []
+
+for word in words:
+    window.append(word)
+    
+    if len(window) == 2:
+        first, second = window
+        
+        if first not in successor_map:
+            successor_map[first] = [second]
+        else:
+            successor_map[first].append(second)
+        
+        window.pop(0)
+
+successor_map
+# {'the': ['cat', 'mat', 'cat'], 
+#  'cat': ['sat', 'ran'], 
+#  'sat': ['on'], 
+#  'on': ['the'], 
+#  'mat': ['the']}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Understanding the Map</h3>
+            <p class="text-gray-700 mb-4">
+              Each word points to its possible successors:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• "the" can be followed by "cat" (appears twice) or "mat" (once)</p>
+              <p>• "cat" can be followed by "sat" or "ran"</p>
+              <p>• Words appearing multiple times have higher probability</p>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🔗 Key Idea:</span> Duplicates in the successor list represent probability—"cat" appears twice after "the", so it's twice as likely to be chosen.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Text Generation -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Generating New Text</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Using the successor map, we can generate new text that follows the same patterns as the original. This is a simple version of how predictive text and AI language models work!
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Generation Algorithm</h3>
+            <p class="text-gray-700 mb-4">
+              Start with a word, then repeatedly choose successors:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>import random
+
+# Start with a word
+word = 'the'
+result = [word]
+
+# Generate 10 more words
+for i in range(10):
+    if word in successor_map:
+        # Get possible successors
+        successors = successor_map[word]
+        # Choose one randomly
+        word = random.choice(successors)
+        result.append(word)
+    else:
+        break
+
+print(' '.join(result))
+# Example output: "the cat sat on the mat the cat ran"</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why It Works</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> Start with any word from the original text</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> Look up which words can follow it</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> Choose one randomly (common successors chosen more often)</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> Repeat with the chosen word</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Improving Results</h3>
+            <p class="text-gray-700 mb-4">
+              Better results with bigrams as keys (trigram analysis):
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Instead of mapping single words to successors</p>
+              <p>• Map word pairs (bigrams) to their successors</p>
+              <p>• This preserves more context and generates better text</p>
+              <p>• Example: ("the", "cat") → ["sat", "ran"]</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">🤖 Real-World Connection:</span> This is essentially how early chatbots worked! Modern LLMs use the same core idea but with billions of parameters and much more context.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging Strategies -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Complex Programs</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            As programs get larger and more complex, debugging becomes more challenging. Here are systematic strategies for tackling difficult bugs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Five Rs of Debugging</h3>
+            <div class="space-y-4">
+              <div class="bg-blue-50 rounded p-4">
+                <p class="font-bold text-blue-800 mb-2">📖 Reading</p>
+                <p class="text-gray-700">Examine your code carefully. Does it say what you meant?</p>
+              </div>
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">▶️ Running</p>
+                <p class="text-gray-700">Experiment with changes. Display values at key points.</p>
+              </div>
+              <div class="bg-purple-50 rounded p-4">
+                <p class="font-bold text-purple-800 mb-2">💭 Ruminating</p>
+                <p class="text-gray-700">Think about error types and what could cause them.</p>
+              </div>
+              <div class="bg-yellow-50 rounded p-4">
+                <p class="font-bold text-yellow-800 mb-2">🦆 Rubberducking</p>
+                <p class="text-gray-700">Explain the problem aloud—often you'll find the answer!</p>
+              </div>
+              <div class="bg-red-50 rounded p-4">
+                <p class="font-bold text-red-800 mb-2">⬅️ Retreating</p>
+                <p class="text-gray-700">Back up to working code, then rebuild carefully.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Rubber Duck Debugging</h3>
+            <p class="text-gray-700 mb-4">
+              This is a real technique! Explain your problem step-by-step to an inanimate object (like a rubber duck). Often, the act of explaining reveals the solution.
+            </p>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">💡 Balance:</span> Don't get stuck on one approach. If reading code isn't working, try running experiments. If experiments fail, step back and think.
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master text analysis with these challenges!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Count trigrams (three-word sequences) and find the most common</li>
+              <li>• Build a successor map using bigrams as keys instead of single words</li>
+              <li>• Generate text using the trigram successor map</li>
+              <li>• Create a function that cleans text more thoroughly (handle contractions, numbers)</li>
+              <li>• Write a spell-checker using dictionary subtraction</li>
+              <li>• Analyze which words most commonly start or end sentences</li>
+              <li>• Build a simple autocomplete system using successor maps</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the text analysis examples from Chapter 12!
+
+# Example: Count unique words
+text = 'the quick brown fox jumps over the lazy dog'
+unique_words = {}
+for word in text.split():
+    unique_words[word] = 1
+
+print('Unique words:', len(unique_words))
+print('Words:', list(unique_words.keys()))
+
+# Example: Word frequency counter
+text = 'the cat in the hat sat on the mat'
+word_counter = {}
+for word in text.split():
+    if word not in word_counter:
+        word_counter[word] = 1
+    else:
+        word_counter[word] += 1
+
+print('\nWord frequencies:', word_counter)
+
+# Example: Find most common
+items = sorted(word_counter.items(), 
+               key=lambda t: t[1], 
+               reverse=True)
+print('\nTop 3 words:')
+for word, freq in items[:3]:
+    print(f'  {freq} {word}')
+
+# Example: Bigram counter
+words = text.split()
+bigram_counter = {}
+window = []
+
+for word in words:
+    window.append(word)
+    if len(window) == 2:
+        key = tuple(window)
+        if key not in bigram_counter:
+            bigram_counter[key] = 1
+        else:
+            bigram_counter[key] += 1
+        window.pop(0)
+
+print('\nBigrams:', bigram_counter)
+
+# Example: Successor map for text generation
+successor_map = {}
+window = []
+for word in words:
+    window.append(word)
+    if len(window) == 2:
+        first, second = window
+        if first not in successor_map:
+            successor_map[first] = [second]
+        else:
+            successor_map[first].append(second)
+        window.pop(0)
+
+print('\nSuccessor map:', successor_map)"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

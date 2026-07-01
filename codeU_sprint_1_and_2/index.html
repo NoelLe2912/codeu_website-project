@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="src/assets/images/codeulogo-square.PNG"
+    />
+  </head>
+
+  <body>
+    <!-- Changed to max-w-[1440px] and removed p-0 -->
+    <div class="max-w-[1440px] mx-auto"> 
+        <header class="px-8 py-4 w-full">
+        <nav class="max-w-full mx-auto px-4 py-4 flex justify-between items-center bg-blue-200 rounded-md">
+            <a href="dashboard.html">
+                <img
+                    src="src/assets/images/codeulogo.PNG" 
+                    alt="CodeU Logo" 
+                    class="h-10 w-auto"
+                    >
+            </a>
+
+            <div class="flex justify-between items-center gap-16 flex-1 max-md:hidden">
+                <ul class="flex-1 flex justify-center items-center gap-16">
+                <li><a href="home.html" class="text-black-600 hover:text-blue-600 font-bold text-xl">Home</a></li>
+                <li><a href="courses.html" class="text-black-600 hover:text-blue-600 font-bold text-xl">Courses</a></li>
+                <li><a href="community.html" class="text-black-600 hover:text-blue-600 font-bold text-xl">Community</a></li>
+                
+            </ul>
+            
+            <button class="bg-yellow-300 text-black px-6 py-2 rounded-lg hover:bg-blue-700 transition font-bold text-xl">
+                Log In
+            </button>
+            </div>
+            <button id="menuBtn" class="md:hidden">
+      <img src="src/assets/icons/hamburger.svg" alt="Menu" width="28" height="28" />
+    </button>
+  </nav>
+
+  <div
+    id="mobileMenu"
+    class="fixed top-0 left-0 h-full w-64 bg-blue-100 shadow-lg transform -translate-x-full transition-transform duration-300 md:hidden z-50"
+  >
+    <div class="flex justify-between items-center p-4 border-b border-blue-300">
+      <h2 class="text-2xl font-bold text-blue-600">Menu</h2>
+      <button id="closeBtn" class="text-2xl font-bold">&times;</button>
+    </div>
+    <ul class="flex flex-col gap-6 p-6 text-lg font-semibold">
+      <li><a href="home.html" class="hover:text-blue-600">Home</a></li>
+      <li><a href="courses.html" class="hover:text-blue-600">Courses</a></li>
+      <li><a href="community.html" class="hover:text-blue-600">Community</a></li>
+      <li>
+        <button class="bg-yellow-300 w-full py-2 rounded-lg hover:bg-blue-700 transition font-bold">
+          Log In
+        </button>
+      </li>
+    </ul>
+  </div>
+    </header>
+    <section class="px-8"> 
+        <div class="mx-auto mt-10 bg-white text-center py-2"> 
+
+            <h2 class="text-5xl font-extrabold text-blue-600">
+            Get Your Hands Dirty
+        </h2>
+        <h3 class="text-xl text-black mt-6 max-w-3xl mx-auto leading-relaxed">
+            We believe the best way to learn is by doing. Dive into hands-on coding challenges and start building your skills with real-world examples.
+        </h3>
+        </div>
+    
+    </section>
+    <section class="mt-10 px-8">
+        <div class="flex justify-center">
+            <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="rounded-xl w-full h-auto object-cover shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] pointer-events-none select-none"
+            
+>
+            <source src="src/assets/videos/learn-code.mp4">
+            Your browser does not support the video.
+</video>
+
+        </div>
+    </section>
+
+    <section class="mt-16 px-8">
+        <h2 class="text-3xl font-extrabold text-blue-600 text-center">
+            Our Development Roadmaps
+        </h2>
+        <h3 class="text-xl text-black mt-4 max-w-3xl mx-auto leading-relaxed text-center">
+            Choose your path and start building real-world skills with our curated development roadmaps.
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+            <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 text-center hover:shadow-xl transition">
+                <img
+                        src="src/assets/icons/frontend.svg" 
+                        alt="Front-end development icon" 
+                        class="h-20 w-auto mx-auto"
+                        >
+                <h4 class="text-xl font-bold mb-2 mt-4">Front-End Development</h4>
+                <p class="text-gray-700">Learn to design and build stunning, responsive user interfaces using HTML, CSS, and JavaScript.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 text-center hover:shadow-xl transition">
+                <img
+                        src="src/assets/icons/backend.svg" 
+                        alt="Back-end development icon" 
+                        class="h-20 w-auto mx-auto"
+                        >
+                <h4 class="text-xl font-bold mb-2 mt-4">Back-End Development</h4>
+                <p class="text-gray-700">Master the logic, databases, and servers that power modern web applications.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 text-center hover:shadow-xl transition">
+                <img
+                        src="src/assets/icons/fullstack.svg" 
+                        alt="Full stack development icon" 
+                        class="h-20 w-auto mx-auto"
+                        >
+                <h4 class="text-xl font-bold mb-2 mt-4">Full-Stack Development</h4>
+                <p class="text-gray-700">Combine front-end and back-end skills to create complete, production-ready web projects.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 text-center hover:shadow-xl transition">
+                <img 
+                        src="src/assets/icons/mobile.svg" 
+                        alt="Mobile app development icon" 
+                        class="h-20 w-auto mx-auto"
+                        >
+                <h4 class="text-xl font-bold mb-2 mt-4">Mobile App Development</h4>
+                <p class="text-gray-700">Build cross-platform mobile apps with smooth performance and modern design.</p>
+            </div>
+        </div>
+    </section>
+<section class="mt-16 px-8">
+  <h2 class="text-3xl font-extrabold text-blue-600 text-center">
+    Cover Different Types of Programming Courses
+  </h2>
+  <h3 class="text-xl text-black mt-4 max-w-3xl mx-auto leading-relaxed text-center">
+    Choose your path and start building real-world skills with our curated development roadmaps.
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png"
+        alt="Programming in Python"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Programming in Python</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png"
+        alt="React for Beginners"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">React for Beginners</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://images.seeklogo.com/logo-png/27/1/node-js-logo-png_seeklogo-273749.png"
+        alt="Building APIs with Node.js & Express"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Building APIs with Node.js & Express</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://images.seeklogo.com/logo-png/48/1/mongodb-logo-png_seeklogo-481256.png"
+        alt="Databases with MongoDB"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Databases with MongoDB</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png"
+        alt="Version Control with Git & GitHub"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Version Control with Git & GitHub</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://img.freepik.com/premium-vector/mobile-phone-logo-vector-white-background_1277164-16579.jpg?w=360"
+        alt="Introduction to Mobile Development"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Introduction to Mobile Development</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://images-cdn.openxcell.com/wp-content/uploads/2024/07/25082439/reactnative-inner.svg"
+        alt="React Native Basics"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">React Native Basics</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://i.pinimg.com/474x/fe/57/10/fe571020f2e476bca20e1ae6441569ec.jpg"
+        alt="HTML & CSS Foundations"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">HTML & CSS Foundations</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/2560px-Tailwind_CSS_Logo.svg.png"
+        alt="Tailwind CSS"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Tailwind CSS</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://static.vecteezy.com/system/resources/previews/027/127/463/non_2x/javascript-logo-javascript-icon-transparent-free-png.png"
+        alt="JavaScript Essentials"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">JavaScript Essentials</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb8BOaJS__WDLbw__6UwcZeAOLO5M6eIhgYA&s"
+        alt="State Management with Redux"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">State Management with Redux</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] p-6 
+                hover:shadow-[0_4px_12px_0_rgba(234,179,8,0.6)] transition flex items-center gap-4">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/9872/9872372.png"
+        alt="Authentication & Security"
+        class="h-20 w-auto flex-shrink-0"
+      />
+      <div class="text-left">
+        <h3 class="font-semibold text-lg">Authentication & Security</h3>
+        <p class="text-gray-600">1 Lesson</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-16 px-8 flex flex-col gap-0">
+    <section class="mt-4">
+        <h2 class="text-3xl font-extrabold text-blue-600 text-center">
+            Code Editor
+        </h2>
+        <h3 class="text-xl text-black mt-4 max-w-3xl mx-auto leading-relaxed text-center">
+            With our online code editor, you can edit code and view instant feedback in your browser.
+        </h3>
+        <div class="flex justify-center mt-6">
+        <video id="fastVideo"
+            autoplay
+            muted
+            loop
+            playsinline
+            class="w-full h-auto rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] pointer-events-none select-none object-cover"
+        >
+            <source src="src/assets/videos/code-editor.mp4">
+            Your browser does not support the video.
+        </video>
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const video = document.getElementById("fastVideo");
+            if (video) video.playbackRate = 3.0;
+        });
+        </script>
+        </div>
+    </section>
+</section>
+<section class="mt-16 px-8 flex flex-col gap-0">
+    <section class="mt-4">
+        <h2 class="text-3xl font-extrabold text-blue-600 text-center">
+            Log In / Sign Up
+        </h2>
+        <h3 class="text-xl text-black mt-4 max-w-3xl mx-auto leading-relaxed text-center">
+            Create a free account to track your progress and get access to more features and learning materials.
+        </h3>
+        <div class="flex justify-center mt-6">
+            <img 
+                src="src/assets/images/dashboard.jpg"
+                alt="Login concept landing page"
+                class="w-full h-auto rounded-xl shadow-[0_4px_8px_0_rgba(37,99,235,0.4)] object-cover"
+            />
+        </div>
+        <div class="flex justify-center mt-12">
+            <button class="bg-yellow-300 text-black px-12 py-4 rounded-lg hover:bg-blue-700 transition text-2xl text-bold">
+                Sign Up for Free
+            </button>
+        </div>
+    </section>
+</section>
+</div>
+<footer class="bg-gray-200 mt-20 py-16">
+    <div class="max-w-[1440px] mx-auto px-8 text-center"> 
+        
+        <div class="flex justify-center gap-12 mb-8 text-lg">
+            <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+            <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+            <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+            <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+            <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+        </div>
+        <div class="flex justify-center gap-6 mb-8">
+            <a href="">
+                <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" alt="Social Media" class="w-10 h-10">
+            </a>
+            <a href="">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" alt="Social Media" class="w-10 h-10">
+            </a>
+            <a href="">
+                <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" alt="Social Media" class="w-10 h-10">
+            </a>
+            <a href="">
+                <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" alt="Social Media" class="w-10 h-10">
+            </a>
+        </div>
+        <div class="flex justify-center items-center gap-2 mb-4">
+            <img src="src/assets/images/codeulogo.PNG" alt="CodeU Logo" class="h-8">
+            <span class="text-2xl font-bold">CODEU</span>
+        </div>
+        <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+    </div>
+</footer>
+    
+    <script>
+  const menuBtn = document.getElementById("menuBtn");
+  const closeBtn = document.getElementById("closeBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.remove("-translate-x-full");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    mobileMenu.classList.add("-translate-x-full");
+  });
+</script>
+    </div>
+  </body>
+</html>

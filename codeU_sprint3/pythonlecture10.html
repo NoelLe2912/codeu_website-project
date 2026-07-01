@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 10: Dictionaries</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+    }
+
+    .panel.left {
+      background-color: #f9fafb;
+      width: 75%;
+      min-width: 150px;
+      overflow-y: auto;
+      transition: width 0.1s ease;
+    }
+
+    .resizer {
+      width: 6px;
+      cursor: col-resize;
+      background-color: #d1d5db;
+      transition: background-color 0.2s ease;
+    }
+
+    .resizer:hover {
+      background-color: #9ca3af;
+    }
+
+    .panel.right {
+      flex: 1;
+      background-color: #1e1e1e;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-container {
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .terminal-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .editor-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-label {
+      color: #569cd6;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .code-editor {
+      flex: 1;
+      background: #2d2d2d;
+      color: #d4d4d4;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: none;
+      min-height: 200px;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+
+    .run-button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .run-button:hover {
+      background: #1177bb;
+    }
+
+    .run-button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-box {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #3e3e3e;
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+    }
+
+    .loading {
+      color: #4ec9b0;
+      font-style: italic;
+    }
+
+    .error {
+      color: #f48771;
+    }
+
+    .success {
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="panel left" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 10: Dictionaries
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Powerful Key-Value Mappings for Efficient Algorithms
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Key-Value Pairs</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Hash Tables</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Fast Lookup</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Dictionaries as Mappings -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Dictionaries Are Mappings</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A dictionary is like a list, but more powerful. Instead of using only integers as indices, dictionaries can use almost any type as a key. This makes them perfect for creating associations between related data.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Limitation of Lists</h3>
+            <p class="text-gray-700 mb-4">
+              With a list, you can only look up values by integer index:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>lst = ['zero', 'one', 'two']
+
+# Look up by integer index
+lst[1]
+# 'one'
+
+# But can't look up by word!
+# How do we find which number "one" represents?</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Creating a Dictionary</h3>
+            <p class="text-gray-700 mb-4">
+              Use curly braces {} to create an empty dictionary, then add items:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Create empty dictionary
+numbers = {}
+
+# Add key-value pairs
+numbers['zero'] = 0
+numbers['one'] = 1
+numbers['two'] = 2
+
+numbers
+# {'zero': 0, 'one': 1, 'two': 2}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Looking Up Values</h3>
+            <p class="text-gray-700 mb-4">
+              Use the bracket operator with a key to get the corresponding value:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>numbers['two']
+# 2
+
+# If key doesn't exist, you get an error
+numbers['three']
+# KeyError: 'three'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Dictionary Properties</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Each item contains a key and a value, separated by a colon (:)</p>
+              <p>• Keys must be unique (no duplicates allowed)</p>
+              <p>• Use len() to count the number of items</p>
+              <p>• Keys can be almost any type (strings, numbers, tuples)</p>
+            </div>
+            <div class="bg-gray-900 rounded-lg p-4 mt-4">
+              <pre class="text-green-400 font-mono text-sm"><code>len(numbers)
+# 3</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Concept:</span> A dictionary represents a mapping from keys to values. Each key "maps to" its associated value, creating a powerful lookup system.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Creating Dictionaries -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Different Ways to Create Dictionaries</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Python provides multiple ways to create dictionaries. Choose the method that best fits your needs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method 1: All at Once</h3>
+            <p class="text-gray-700 mb-4">
+              Create a dictionary with initial items using curly braces:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>numbers = {'zero': 0, 'one': 1, 'two': 2}
+numbers
+# {'zero': 0, 'one': 1, 'two': 2}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Method 2: Using dict()</h3>
+            <p class="text-gray-700 mb-4">
+              The dict() function can create empty dictionaries or copies:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Create empty dictionary
+empty = dict()
+empty
+# {}
+
+# Make a copy of an existing dictionary
+numbers_copy = dict(numbers)
+numbers_copy
+# {'zero': 0, 'one': 1, 'two': 2}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">🔄 Best Practice:</span> Create a copy before modifying a dictionary if you want to preserve the original. Changes to a copy don't affect the original.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 3: The in Operator -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Fast Lookups with in</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The in operator works with dictionaries and is remarkably fast—even with millions of items! This is what makes dictionaries so powerful.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checking for Keys</h3>
+            <p class="text-gray-700 mb-4">
+              The in operator checks if something appears as a key:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>numbers = {'zero': 0, 'one': 1, 'two': 2}
+
+# Check for key
+'one' in numbers
+# True
+
+# Note: checks keys, not values!
+1 in numbers
+# False</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Checking for Values</h3>
+            <p class="text-gray-700 mb-4">
+              To check values, use the values() method:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Check if 1 is a value
+1 in numbers.values()
+# True</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Dictionaries Are Fast</h3>
+            <p class="text-gray-700 mb-4">
+              Dictionaries use hash tables—the in operator takes the same time regardless of size:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-red-800 mb-2">Lists: Slow</p>
+                <p class="text-sm text-gray-700">Searches from beginning to end</p>
+                <p class="text-sm text-gray-700">100,000 items = 100,000 checks</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-800 mb-2">Dictionaries: Fast</p>
+                <p class="text-sm text-gray-700">Direct lookup using hash</p>
+                <p class="text-sm text-gray-700">100,000 items = ~1 check</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Performance Comparison</h3>
+            <p class="text-gray-700 mb-4">
+              Finding reversed words—list vs dictionary:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># With a list: > 60 seconds (very slow!)
+def too_slow():
+    count = 0
+    for word in word_list:
+        if reverse_word(word) in word_list:
+            count += 1
+    return count
+
+# With a dictionary: < 0.01 seconds (10,000x faster!)
+def much_faster():
+    count = 0
+    for word in word_dict:
+        if reverse_word(word) in word_dict:
+            count += 1
+    return count</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Speed Boost:</span> Converting a list to a dictionary for lookups can make your code thousands of times faster!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: Counting with Dictionaries -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">A Collection of Counters</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Dictionaries are perfect for counting how many times things appear. This pattern—using a dictionary to count occurrences—is extremely common in data analysis.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Counting Pattern</h3>
+            <p class="text-gray-700 mb-4">
+              For each item, if it's new, set count to 1. If it exists, increment the count:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def value_counts(string):
+    counter = {}
+    for letter in string:
+        if letter not in counter:
+            counter[letter] = 1
+        else:
+            counter[letter] += 1
+    return counter
+
+counter = value_counts('brontosaurus')
+counter
+# {'b': 1, 'r': 2, 'o': 2, 'n': 1, 't': 1, 's': 2, 'a': 1, 'u': 2}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How It Works</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> Start with an empty dictionary</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> Loop through each letter</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> If letter is new, add it with count 1</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> If letter exists, increment its count</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">📊 Common Pattern:</span> This counting technique works for anything—letters, words, items, events. It's one of the most useful dictionary patterns!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Looping and Dictionaries -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Looping Through Dictionaries</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When you use a for loop with a dictionary, it automatically loops through the keys. You can also loop through values or key-value pairs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Looping Through Keys</h3>
+            <p class="text-gray-700 mb-4">
+              By default, for loops iterate over keys:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>counter = value_counts('banana')
+counter
+# {'b': 1, 'a': 3, 'n': 2}
+
+for key in counter:
+    print(key)
+
+# Output:
+# b
+# a
+# n</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Looping Through Values</h3>
+            <p class="text-gray-700 mb-4">
+              Use the values() method to loop through values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for value in counter.values():
+    print(value)
+
+# Output:
+# 1
+# 3
+# 2</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Looping Through Keys and Values</h3>
+            <p class="text-gray-700 mb-4">
+              Loop through keys and look up each value:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for key in counter:
+    value = counter[key]
+    print(key, value)
+
+# Output:
+# b 1
+# a 3
+# n 2</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">💡 Note:</span> There's an even more concise way to loop through both keys and values using items()—you'll learn this in future chapters!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Lists and Dictionaries -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Lists and Dictionaries Together</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            You can use lists as dictionary values, but not as keys. Understanding why requires knowing about hash tables and immutability.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Lists as Values: Allowed</h3>
+            <p class="text-gray-700 mb-4">
+              You can store lists as dictionary values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>d = {4: ['r', 'o', 'u', 's']}
+d
+# {4: ['r', 'o', 'u', 's']}</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Lists as Keys: Not Allowed</h3>
+            <p class="text-gray-700 mb-4">
+              Attempting to use a list as a key causes a TypeError:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>letters = ['a', 'b', 'c', 'd']
+d[letters] = 4
+# TypeError: unhashable type: 'list'</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why Keys Must Be Hashable</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• Dictionaries use hash functions to compute integer hash values from keys</p>
+              <p>• These hash values determine where to store items in memory</p>
+              <p>• If a key could change (is mutable), its hash value would change</p>
+              <p>• This would break the dictionary's internal organization</p>
+              <p>• Therefore, keys must be immutable (hashable)</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">✓ Hashable (Can Be Keys)</h4>
+              <p class="text-gray-700">• Strings</p>
+              <p class="text-gray-700">• Numbers (int, float)</p>
+              <p class="text-gray-700">• Tuples (if they contain only hashable items)</p>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">✗ Not Hashable (Cannot Be Keys)</h4>
+              <p class="text-gray-700">• Lists</p>
+              <p class="text-gray-700">• Dictionaries</p>
+              <p class="text-gray-700">• Sets</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: Accumulating Lists -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Building Lists with Accumulators</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            A common pattern is to loop through one collection while building another. The variable that collects items is called an accumulator.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Counting Palindromes</h3>
+            <p class="text-gray-700 mb-4">
+              First, let's count how many palindromes exist:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def is_palindrome(word):
+    return reverse_word(word) == word
+
+count = 0
+for word in word_dict:
+    if is_palindrome(word):
+        count += 1
+
+count
+# 91</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Collecting Palindromes</h3>
+            <p class="text-gray-700 mb-4">
+              Now let's build a list of palindromes using an accumulator:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>palindromes = []
+
+for word in word_dict:
+    if is_palindrome(word):
+        palindromes.append(word)
+
+palindromes[:10]
+# ['aa', 'aba', 'aga', 'aha', 'ala', 'alula', 'ama', 'ana', 'anna', 'ava']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Filtering Long Palindromes</h3>
+            <p class="text-gray-700 mb-4">
+              Loop through the list again to select only long palindromes:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>long_palindromes = []
+
+for word in palindromes:
+    if len(word) >= 7:
+        long_palindromes.append(word)
+
+long_palindromes
+# ['deified', 'halalah', 'reifier', 'repaper', 'reviver', 
+#  'rotator', 'sememes']</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🎯 Pattern Name:</span> Looping through a collection and selecting some elements while omitting others is called filtering.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Memoization -->
+        <section class="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Memoization: Caching Results</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Memoization uses a dictionary to store previously computed values, avoiding redundant calculations. This can make recursive functions dramatically faster.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Problem: Slow Fibonacci</h3>
+            <p class="text-gray-700 mb-4">
+              The standard recursive Fibonacci is very slow:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def fibonacci(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# fibonacci(40) takes ~30 seconds!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Why It's Slow</h3>
+            <p class="text-gray-700 mb-4">
+              The function recalculates the same values over and over:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• fibonacci(4) calls fibonacci(3) and fibonacci(2)</p>
+              <p>• fibonacci(3) calls fibonacci(2) and fibonacci(1)</p>
+              <p>• fibonacci(2) is computed multiple times!</p>
+              <p>• The redundancy grows exponentially</p>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Solution: Memoization</h3>
+            <p class="text-gray-700 mb-4">
+              Store computed values in a dictionary:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>known = {0: 0, 1: 1}
+
+def fibonacci_memo(n):
+    if n in known:
+        return known[n]
+    
+    res = fibonacci_memo(n-1) + fibonacci_memo(n-2)
+    known[n] = res
+    return res
+
+# fibonacci_memo(40) takes ~0.00003 seconds!
+# That's 1,000,000 times faster!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How Memoization Works</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> Check if result is already in the dictionary</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> If yes, return it immediately</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> If no, compute the result</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> Store the result in the dictionary</p>
+              <p><span class="font-bold text-blue-600">Step 5:</span> Return the result</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Amazing Speed Boost:</span> Memoization can turn algorithms from impossibly slow to instant. It's one of the most powerful optimization techniques!
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Large Datasets</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When working with big dictionaries and datasets, traditional debugging techniques become unwieldy. Here are strategies that scale better.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Scale Down the Input</h3>
+            <p class="text-gray-700 mb-4">
+              Work with smaller datasets while debugging:
+            </p>
+            <div class="space-y-2 text-gray-700 ml-4">
+              <p>• Start with just 10 lines instead of 100,000</p>
+              <p>• Find the smallest example that causes the error</p>
+              <p>• Gradually increase size as you fix bugs</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Check Summaries and Types</h3>
+            <p class="text-gray-700 mb-4">
+              Print summary information instead of entire contents:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Instead of printing entire dictionary
+# print(huge_dict)  # Too much output!
+
+# Print summaries
+print(f"Dictionary has {len(huge_dict)} items")
+print(f"First key: {list(huge_dict.keys())[0]}")
+print(f"Type of values: {type(list(huge_dict.values())[0])}")</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Write Self-Checks</h3>
+            <p class="text-gray-700 mb-4">
+              Add sanity checks and consistency checks:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Sanity check
+average = sum(numbers) / len(numbers)
+assert average <= max(numbers), "Average too high!"
+assert average >= min(numbers), "Average too low!"
+
+# Consistency check
+assert len(dict1) + len(dict2) == len(combined_dict)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 border-l-4 border-purple-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-purple-800">🔧 Pro Tip:</span> Time spent building good debugging infrastructure (scaffolding) reduces overall debugging time dramatically.
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Master dictionaries with these challenges!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Rewrite value_counts using the get() method to eliminate the if statement</li>
+              <li>• Write has_duplicates to check if any element appears more than once</li>
+              <li>• Create find_repeats to return keys with counts greater than 1</li>
+              <li>• Write add_counters to combine two letter-counting dictionaries</li>
+              <li>• Implement is_interlocking to check if a word can split into two valid words</li>
+              <li>• Find all interlocking words with 8+ letters in the word list</li>
+              <li>• Use memoization to optimize other recursive functions</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="resizer" id="resizer"></div>
+
+    <div class="panel right">
+      <div class="terminal-container">
+        <div class="terminal-header">🐍 Python Practice Terminal</div>
+        
+        <div class="terminal-content">
+          <div class="editor-section">
+            <label class="terminal-label">Python Code:</label>
+            <textarea id="code" class="code-editor" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 10!
+
+# Example: Creating dictionaries
+numbers = {}
+numbers['zero'] = 0
+numbers['one'] = 1
+numbers['two'] = 2
+print('Dictionary:', numbers)
+
+# Create all at once
+colors = {'red': '#FF0000', 'green': '#00FF00', 'blue': '#0000FF'}
+print('Colors:', colors)
+
+# Example: Looking up values
+print('Number two:', numbers['two'])
+print('Red hex:', colors['red'])
+
+# Example: The in operator
+print('Is \"one\" a key?', 'one' in numbers)
+print('Is 1 a key?', 1 in numbers)
+print('Is 1 a value?', 1 in numbers.values())
+
+# Example: Counting letters
+def value_counts(string):
+    counter = {}
+    for letter in string:
+        if letter not in counter:
+            counter[letter] = 1
+        else:
+            counter[letter] += 1
+    return counter
+
+counter = value_counts('brontosaurus')
+print('Letter counts:', counter)
+
+# Example: Looping
+for key in counter:
+    print(f'{key}: {counter[key]}')
+
+# Example: Length
+print('Dictionary size:', len(counter))"></textarea>
+            <button id="runBtn" class="run-button" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="output-section">
+            <label class="terminal-label">Output:</label>
+            <div id="output" class="output-box"><span class="loading">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="success">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="error">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="error">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="loading">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="error">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 3: Functions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+  />
+</head>
+
+<body class="h-full m-0 flex flex-col overflow-hidden">
+  <header class="bg-blue-500 shadow-[0_4px_8px_0_rgba(37,99,235,0.4)]">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="dashboard.html">
+        <img
+          src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads"
+          alt="CodeU Logo"
+          class="h-10 w-auto"
+        />
+      </a>
+
+      <nav class="space-x-6">
+        <a href="home.html" class="text-yellow-300 hover:text-blue-600 font-bold">Home</a>
+        <a href="courses.html" class="text-yellow-300 hover:text-blue-600 font-bold">Courses</a>
+        <a href="community.html" class="text-yellow-300 hover:text-blue-600 font-bold">Community</a>
+        <a href="aboutus.html" class="text-yellow-300 hover:text-blue-600 font-bold">About Us</a>
+        <a href="reviews.html" class="text-yellow-300 hover:text-blue-600 font-bold">Reviews</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="flex-1 flex flex-row overflow-hidden">
+    <div class="bg-gray-50 overflow-y-auto transition-[width] duration-100" style="width: 75%; min-width: 150px;" id="leftPanel">
+      <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+          <h1 class="text-5xl font-extrabold text-blue-600 mb-6">
+            Chapter 3: Functions
+          </h1>
+          <p class="text-2xl text-gray-700 mb-4">
+            Building Your Own Reusable Code Blocks
+          </p>
+          <div class="flex justify-center gap-4 mt-8">
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">Define Functions</span>
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">Use Parameters</span>
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">Create Loops</span>
+          </div>
+        </section>
+
+        <!-- Section 1: Defining Functions -->
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Creating Your Own Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            So far, you've been using functions that Python provides, like print and len. Now you'll learn to write your own! A function definition tells Python how to perform a specific task that you can use over and over.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Anatomy of a Function</h3>
+            <p class="text-gray-700 mb-4">
+              A function definition starts with the keyword def, followed by the function name, parentheses, and a colon. The code inside (the body) must be indented.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def greet_user():
+    print("Welcome to Python!")
+    print("Let's learn about functions.")</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6">
+              <h4 class="font-bold text-gray-800 mb-3 text-xl">Header</h4>
+              <p class="text-gray-700 mb-3">The first line with def, the name, and the colon</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-yellow-400 text-sm">def greet_user():</code>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6">
+              <h4 class="font-bold text-gray-800 mb-3 text-xl">Body</h4>
+              <p class="text-gray-700 mb-3">The indented statements that run when called</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">    print("Welcome!")</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Calling Your Function</h3>
+            <p class="text-gray-700 mb-4">
+              After you define a function, you can run it by writing its name followed by parentheses:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># Call the function
+greet_user()
+
+# Output:
+# Welcome to Python!
+# Let's learn about functions.</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">💡 Key Point:</span> Defining a function doesn't run it—it just creates it. You must call the function to execute the code inside.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 2: Parameters -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Adding Parameters</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Parameters make functions flexible by allowing you to pass different values each time you call them. A parameter is like a placeholder that gets filled in when the function runs.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Functions with One Parameter</h3>
+            <p class="text-gray-700 mb-4">
+              The parameter name goes inside the parentheses in the function header:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def display_message(text):
+    print(text)
+    print(text)
+
+# Call it with different arguments
+display_message("Hello!")
+display_message("Python is fun")</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How Parameters Work</h3>
+            <p class="text-gray-700 mb-4">
+              When you call a function with an argument, Python assigns that value to the parameter. It's like creating a temporary variable inside the function.
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># These two are equivalent:
+display_message("Hi there")
+
+# Is the same as:
+text = "Hi there"
+print(text)
+print(text)</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-purple-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Using Variables as Arguments</h3>
+            <p class="text-gray-700 mb-4">
+              You can pass variables to functions, not just literal values:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>message = "Good morning!"
+display_message(message)
+
+# The value of message gets assigned to text</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Functions Calling Functions -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Functions Working Together</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            One of the most powerful features of functions is that they can call other functions. This lets you build complex programs from simple, reusable pieces.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Building Blocks</h3>
+            <p class="text-gray-700 mb-4">
+              Let's create a simple example with multiple functions that work together:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code># A function with two parameters
+def echo(word, count):
+    print(word * count)
+
+# A function that uses echo
+def show_pattern():
+    echo("*", 5)
+    echo("-", 3)
+    echo("*", 5)
+
+# Call the top-level function
+show_pattern()
+# Output:
+# *****
+# ---
+# *****</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Function Call Chain</h3>
+            <p class="text-gray-700 mb-4">
+              When you run show_pattern(), it calls echo three times. Each call to echo then calls print. That's a chain of function calls!
+            </p>
+            <div class="flex justify-center">
+              <div class="bg-white rounded-lg p-6 shadow-md">
+                <div class="text-center space-y-2">
+                  <div class="bg-purple-500 text-white px-4 py-2 rounded">show_pattern()</div>
+                  <div class="text-2xl">↓</div>
+                  <div class="bg-blue-500 text-white px-4 py-2 rounded">echo("*", 5)</div>
+                  <div class="text-2xl">↓</div>
+                  <div class="bg-green-500 text-white px-4 py-2 rounded">print("*****")</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">✓ Design Tip:</span> Breaking your program into smaller functions makes it easier to understand, test, and fix. Each function should do one clear task.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 4: For Loops -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Repeating with For Loops</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            The for loop lets you repeat actions without writing the same code over and over. It's one of the most useful tools in programming.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Basic For Loop Structure</h3>
+            <p class="text-gray-700 mb-4">
+              A for loop has a header (ending with a colon) and an indented body:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>for num in range(3):
+    print(num)
+
+# Output:
+# 0
+# 1
+# 2</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How It Works</h3>
+            <div class="space-y-4 text-gray-700">
+              <p><span class="font-bold text-blue-600">Step 1:</span> The range(3) creates a sequence: 0, 1, 2</p>
+              <p><span class="font-bold text-blue-600">Step 2:</span> Python assigns the first value (0) to num and runs the body</p>
+              <p><span class="font-bold text-blue-600">Step 3:</span> It loops back, assigns the next value (1) to num, and runs the body again</p>
+              <p><span class="font-bold text-blue-600">Step 4:</span> This continues until all values are used</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Loops in Functions</h3>
+            <p class="text-gray-700 mb-4">
+              You can put loops inside functions to repeat actions a specific number of times:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def display_countdown(start):
+    for i in range(start):
+        print("T-minus", start - i)
+    print("Liftoff!")
+
+display_countdown(5)
+# Output:
+# T-minus 5
+# T-minus 4
+# T-minus 3
+# T-minus 2
+# T-minus 1
+# Liftoff!</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-yellow-800">⚡ Remember:</span> Python counts starting from 0. So range(5) gives you 0, 1, 2, 3, 4—that's five numbers total, but the highest is 4.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 5: Local Variables -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Variable Scope: Local vs Global</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Variables created inside a function are local—they only exist while that function is running. Once the function finishes, those variables disappear.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Local Variables Example</h3>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-green-400 font-mono text-sm"><code>def combine_and_display(first, second):
+    combined = first + second  # Local variable
+    print(combined)
+    print(combined)
+
+word1 = "Hello "
+word2 = "World"
+combine_and_display(word1, word2)
+# Output:
+# Hello World
+# Hello World
+
+# But this causes an error:
+print(combined)  # NameError: combined doesn't exist here!</code></pre>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="font-bold text-green-800 mb-3 text-xl">Inside the Function</h4>
+              <p class="text-gray-700 mb-3">Variables and parameters are accessible and usable</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-green-400 text-sm">combined ✓<br>first ✓<br>second ✓</code>
+              </div>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-6">
+              <h4 class="font-bold text-red-800 mb-3 text-xl">Outside the Function</h4>
+              <p class="text-gray-700 mb-3">Local variables and parameters don't exist</p>
+              <div class="bg-gray-900 rounded p-3">
+                <code class="text-red-400 text-sm">combined ✗<br>first ✗<br>second ✗</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-blue-800">📚 Why This Matters:</span> Local variables let different functions use the same variable names without conflicts. Each function has its own separate workspace.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 6: Stack Diagrams -->
+        <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Visualizing Function Calls: Stack Diagrams</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Stack diagrams help you understand which variables belong to which function. They're especially useful when functions call other functions.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">What Are Frames?</h3>
+            <p class="text-gray-700 mb-4">
+              Each function call creates a frame—a box containing that function's parameters and local variables. Frames stack on top of each other.
+            </p>
+            <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-8">
+              <div class="bg-white rounded-lg p-6 space-y-4">
+                <div class="border-4 border-green-500 rounded p-4">
+                  <p class="font-bold text-green-700 mb-2">print()</p>
+                  <p class="text-sm text-gray-600">Built-in function</p>
+                </div>
+                <div class="border-4 border-blue-500 rounded p-4">
+                  <p class="font-bold text-blue-700 mb-2">display_message()</p>
+                  <p class="text-sm">text → "Hello"</p>
+                </div>
+                <div class="border-4 border-purple-500 rounded p-4">
+                  <p class="font-bold text-purple-700 mb-2">__main__</p>
+                  <p class="text-sm">message → "Hello"</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Reading Stack Diagrams</h3>
+            <div class="space-y-3 text-gray-700">
+              <p>• The bottom frame is __main__ (your main program)</p>
+              <p>• Each function call adds a new frame on top</p>
+              <p>• When a function finishes, its frame is removed</p>
+              <p>• Variables in each frame are separate from other frames</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: Tracebacks -->
+        <section class="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Understanding Tracebacks</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            When an error occurs inside a function, Python shows you a traceback—a report of which functions were running when the error happened.
+          </p>
+
+          <div class="bg-white rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Reading Tracebacks</h3>
+            <p class="text-gray-700 mb-4">
+              A traceback shows the chain of function calls from your main code down to where the error occurred:
+            </p>
+            <div class="bg-gray-900 rounded-lg p-6">
+              <pre class="text-red-400 font-mono text-sm"><code>Traceback (most recent call last):
+  File "main.py", line 10, in &lt;module&gt;
+    combine_and_display(word1, word2)
+  File "main.py", line 5, in combine_and_display
+    print(undefined_var)
+NameError: name 'undefined_var' is not defined</code></pre>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">How to Read It</h3>
+            <div class="space-y-3 text-gray-700">
+              <p><span class="font-bold text-yellow-800">Top:</span> Shows where you called the function</p>
+              <p><span class="font-bold text-yellow-800">Middle:</span> Shows the chain of function calls</p>
+              <p><span class="font-bold text-yellow-800">Bottom:</span> Shows exactly where the error occurred and what went wrong</p>
+            </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-red-800">🔍 Debugging Tip:</span> Start reading from the bottom of the traceback—that's where the actual error is. The lines above show how you got there.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 8: Why Functions? -->
+        <section class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">The Power of Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            You might wonder why you should bother creating functions when you could just write the code directly. Here are the compelling reasons:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg p-6">
+              <div class="text-4xl mb-3">📛</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-xl">Organization</h4>
+              <p class="text-gray-700">Give meaningful names to blocks of code, making programs easier to read and understand</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-lg p-6">
+              <div class="text-4xl mb-3">🔄</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-xl">Reusability</h4>
+              <p class="text-gray-700">Write code once, use it many times. No need to copy and paste the same code</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg p-6">
+              <div class="text-4xl mb-3">🔧</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-xl">Maintainability</h4>
+              <p class="text-gray-700">Fix bugs or make improvements in one place, and the changes apply everywhere</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-pink-100 to-pink-200 rounded-lg p-6">
+              <div class="text-4xl mb-3">🧩</div>
+              <h4 class="font-bold text-gray-800 mb-2 text-xl">Modularity</h4>
+              <p class="text-gray-700">Break complex problems into smaller, manageable pieces you can test independently</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg p-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Example: Without vs With Functions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-red-50 rounded p-4">
+                <p class="font-bold text-red-800 mb-2">Without Functions (Repetitive)</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-red-400 font-mono text-xs"><code>print("="*20)
+print("Menu")
+print("="*20)
+# ... 50 more lines ...
+print("="*20)
+print("Settings")
+print("="*20)</code></pre>
+                </div>
+              </div>
+              <div class="bg-green-50 rounded p-4">
+                <p class="font-bold text-green-800 mb-2">With Functions (Reusable)</p>
+                <div class="bg-gray-900 rounded p-3">
+                  <pre class="text-green-400 font-mono text-xs"><code>def print_header(title):
+    print("="*20)
+    print(title)
+    print("="*20)
+
+print_header("Menu")
+print_header("Settings")</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 9: Debugging -->
+        <section class="bg-white rounded-xl shadow-lg p-10 mb-12">
+          <h2 class="text-4xl font-bold text-blue-600 mb-6">Debugging Functions</h2>
+          <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Debugging is like being a detective—you gather clues, form hypotheses, and test them. It's a crucial skill that gets easier with practice.
+          </p>
+
+          <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">The Debugging Mindset</h3>
+            <div class="space-y-4">
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-blue-600 mb-2">🔍 Detective Work</p>
+                <p class="text-gray-700">Look at the clues (error messages, unexpected output) and figure out what caused them</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-green-600 mb-2">🧪 Experimentation</p>
+                <p class="text-gray-700">Make a hypothesis about what's wrong, change your code, and test if you're right</p>
+              </div>
+              <div class="bg-white rounded p-4">
+                <p class="font-bold text-purple-600 mb-2">🪜 Small Steps</p>
+                <p class="text-gray-700">Write a little code, test it, then write more. Don't write 100 lines before testing!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 rounded-lg p-6 mb-6">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Common Function Errors</h3>
+            <div class="space-y-3">
+              <div class="border-l-4 border-red-500 pl-4">
+                <p class="font-bold text-gray-800">Forgetting to call the function</p>
+                <div class="bg-gray-900 rounded p-2 mt-2">
+                  <code class="text-red-400 text-sm">greet_user  # Missing parentheses!</code>
+                </div>
+              </div>
+              <div class="border-l-4 border-yellow-500 pl-4">
+                <p class="font-bold text-gray-800">Wrong number of arguments</p>
+                <div class="bg-gray-900 rounded p-2 mt-2">
+                  <code class="text-yellow-400 text-sm">echo("Hi")  # echo needs 2 arguments!</code>
+                </div>
+              </div>
+              <div class="border-l-4 border-orange-500 pl-4">
+                <p class="font-bold text-gray-800">Incorrect indentation</p>
+                <div class="bg-gray-900 rounded p-2 mt-2">
+                  <code class="text-orange-400 text-sm">def test():<br>print("No indent!")  # IndentationError</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded">
+            <p class="text-lg text-gray-700">
+              <span class="font-bold text-green-800">💪 Pro Tip:</span> If debugging takes a long time, you're probably writing too much code before testing. Test small pieces frequently to catch errors early!
+            </p>
+          </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-10 text-white text-center mb-12">
+          <h2 class="text-3xl font-bold mb-4">Practice Exercises</h2>
+          <p class="text-xl mb-6">Try these challenges in the Python terminal to master functions!</p>
+          <div class="bg-white/20 rounded-lg p-6 text-left">
+            <p class="font-bold mb-3 text-xl">Build Your Skills:</p>
+            <ul class="space-y-2">
+              <li>• Create a function called print_border that takes a string and prints it with a line of dashes above and below</li>
+              <li>• Write a function called square that takes a number and returns that number multiplied by itself</li>
+              <li>• Make a function draw_line that takes a character and a number, and prints that character repeated n times</li>
+              <li>• Create a function make_box that uses draw_line to print a rectangular box made of asterisks</li>
+              <li>• Write a function countdown that uses a for loop to count down from a given number to 1, then prints "Done!"</li>
+              <li>• Make a function print_multiplication_table that takes a number and prints its multiplication table from 1 to 10</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="bg-gray-200 mt-20 py-16">
+          <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center gap-12 mb-8 text-lg">
+              <a href="aboutus.html" class="hover:text-blue-600 transition">About Us</a>
+              <a href="community.html" class="hover:text-blue-600 transition">Community</a>
+              <a href="courses.html" class="hover:text-blue-600 transition">Courses</a>
+              <a href="reviews.html" class="hover:text-blue-600 transition">Reviews</a>
+              <a href="contact.html" class="hover:text-blue-600 transition">Contact</a>
+            </div>
+
+            <div class="flex justify-center gap-6 mb-8">
+              <img src="https://www.pngmart.com/files/13/Instagram-Logo-PNG-Pic.png" class="w-10 h-10" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Facebook_icon_%28black%29.svg/2048px-Facebook_icon_%28black%29.svg.png" class="w-10 h-10" />
+              <img src="https://images.freeimages.com/image/large-previews/f35/x-twitter-logo-on-black-circle-5694247.png?h=350" class="w-10 h-10" />
+              <img src="https://www.iconpacks.net/icons/1/free-youtube-icon-123-thumb.png" class="w-10 h-10" />
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-4">
+              <img src="https://gitlab.cci.drexel.edu/cid/2526/fw1023/a4/codeu-website-project/-/raw/main/codeulogo.png?ref_type=heads" class="h-8" />
+              <span class="text-2xl font-bold">CODEU</span>
+            </div>
+            <p class="text-gray-600">2025 CodeU Team, Drexel University</p>
+            <p class="text-gray-600">Content adapted from <em>Think Python</em> by Allen B. Downey.<br />
+Originally published: April 2002.</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="w-1.5 cursor-col-resize bg-gray-300 hover:bg-gray-400 transition-colors duration-200" id="resizer"></div>
+
+    <div class="flex-1 bg-[#1e1e1e] overflow-y-auto flex flex-col">
+      <div class="font-mono text-[#d4d4d4] p-5 h-full flex flex-col">
+        <div class="text-[#4ec9b0] mb-5 text-2xl font-bold">🐍 Python Practice Terminal</div>
+        
+        <div class="flex-1 flex flex-col gap-5">
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Python Code:</label>
+            <textarea id="code" class="flex-1 bg-[#2d2d2d] text-[#d4d4d4] border border-[#3e3e3e] rounded px-3 py-3 font-mono text-sm resize-none min-h-[200px] focus:outline-none focus:border-[#007acc]" placeholder="# Write your Python code here and click Run!
+# Try the examples from Chapter 3!
+
+# Example: Define and call a function
+def greet():
+    print('Hello, Python learner!')
+
+greet()
+
+# Example: Function with parameters
+def multiply(x, y):
+    result = x * y
+    print(result)
+
+multiply(6, 7)
+
+# Example: For loop
+for i in range(5):
+    print('Count:', i)"></textarea>
+            <button id="runBtn" class="bg-[#0e639c] text-white border-0 px-5 py-2.5 rounded cursor-pointer text-sm font-bold hover:bg-[#1177bb] transition-colors mt-2.5 disabled:bg-[#555] disabled:cursor-not-allowed" onclick="runCode()">▶ Run Code</button>
+          </div>
+          
+          <div class="flex-1 flex flex-col">
+            <label class="text-[#569cd6] mb-2 font-bold text-sm">Output:</label>
+            <div id="output" class="flex-1 bg-[#1e1e1e] border border-[#3e3e3e] rounded px-3 py-3 overflow-y-auto whitespace-pre-wrap text-sm min-h-[200px]"><span class="text-[#4ec9b0] italic">Loading Python environment...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Resizer functionality
+    const resizer = document.getElementById("resizer");
+    const leftPanel = document.getElementById("leftPanel");
+    let isResizing = false;
+
+    resizer.addEventListener("mousedown", () => {
+      isResizing = true;
+      document.addEventListener("mousemove", resize);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+      if (!isResizing) return;
+      const newWidth = Math.max(150, e.clientX);
+      leftPanel.style.width = `${newWidth}px`;
+    }
+
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener("mousemove", resize);
+      document.removeEventListener("mouseup", stopResize);
+    }
+
+    // Python Terminal functionality
+    let pyodide;
+    
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide();
+        document.getElementById('output').innerHTML = '<span class="text-[#4ec9b0]">✓ Python ready! Write some code and click "Run Code".</span>';
+        document.getElementById('runBtn').disabled = false;
+      } catch (e) {
+        document.getElementById('output').innerHTML = '<span class="text-[#f48771]">✗ Error loading Python: ' + e.message + '</span>';
+      }
+    }
+    
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const output = document.getElementById('output');
+      const btn = document.getElementById('runBtn');
+      
+      if (!code.trim()) {
+        output.innerHTML = '<span class="text-[#f48771]">Please enter some code first.</span>';
+        return;
+      }
+      
+      btn.disabled = true;
+      output.innerHTML = '<span class="text-[#4ec9b0] italic">⏳ Running...</span>';
+      
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+`);
+        
+        await pyodide.runPythonAsync(code);
+        
+        const result = await pyodide.runPythonAsync(`
+sys.stdout.getvalue()
+`);
+        
+        output.textContent = result || '(No output)';
+      } catch (e) {
+        output.innerHTML = '<span class="text-[#f48771]">Error:\n' + e.message + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+    
+    initPyodide();
+    
+    document.getElementById('code').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>
